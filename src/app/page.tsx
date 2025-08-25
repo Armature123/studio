@@ -64,7 +64,7 @@ export default function Home() {
         <div className="container flex h-16 items-center">
           <div className="mr-4 flex items-center">
             <Landmark className="h-6 w-6 mr-2" />
-            <h1 className="text-lg font-semibold">LexiGuide</h1>
+            <h1 className="text-lg font-semibold">ClauseWise</h1>
           </div>
           <div className="flex flex-1 items-center justify-end">
             {analysis && (
@@ -96,7 +96,7 @@ export default function Home() {
       <footer className="py-6 md:px-8 md:py-0 border-t">
         <div className="container flex flex-col items-center justify-center gap-4 md:h-24 md:flex-row">
             <p className="text-balance text-center text-sm leading-loose text-muted-foreground">
-                Built by Your AI Assistant.
+                Built by Your AI Assistant. wise about clauses
             </p>
         </div>
       </footer>
