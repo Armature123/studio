@@ -41,14 +41,24 @@ By: John Smith, Manager
 `;
 
 export async function analyzeDocument(formData: FormData) {
-  // In a real app, you would get the file from formData and read its text:
-  // const file = formData.get('document') as File;
-  // if (!file || file.size === 0) {
-  //   return { error: 'No document provided or document is empty.' };
-  // }
-  // const documentText = await file.text();
+  const file = formData.get('document') as File;
+  let documentText = formData.get('documentText') as string;
   
-  const documentText = sampleDocumentText;
+  if (!file && !documentText) {
+    return { error: 'No document or text provided.' };
+  }
+  
+  // In a real app, you'd use the uploaded file's text. Here we have a fallback for demo purposes.
+  if (file && file.size > 0) {
+    // This is where you would read the file text.
+    // For this demo, we'll just use the sample text if a file is "uploaded".
+    documentText = sampleDocumentText;
+    // documentText = await file.text(); 
+  } else if (!documentText) {
+     return { error: 'The provided text is empty.' };
+  }
+
+
   const companyType = "Startup";
 
   try {
