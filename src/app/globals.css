@@ -22,8 +22,8 @@ body {
     --muted-foreground: 210 17% 45%; /* Lighter Steel Grey */
     --accent: 122 47% 34%; /* Emerald Green */
     --accent-foreground: 210 40% 98%;
-    --destructive: 39 95% 56%; /* Amber for risks */
-    --destructive-foreground: 224 52% 20%; /* Deep Navy Blue on Amber */
+    --destructive: 0 63% 51%; /* Red for high risk */
+    --destructive-foreground: 210 40% 98%;
     --border: 210 14.3% 89.8%;
     --input: 210 14.3% 89.8%;
     --ring: 224 52% 20%;
@@ -57,8 +57,8 @@ body {
     --muted-foreground: 210 17% 65%;
     --accent: 122 47% 44%;
     --accent-foreground: 210 40% 98%;
-    --destructive: 39 95% 56%; /* Amber */
-    --destructive-foreground: 224 52% 10%;
+    --destructive: 0 63% 51%; /* Red for high risk */
+    --destructive-foreground: 210 40% 98%;
     --border: 224 52% 25%;
     --input: 224 52% 25%;
     --ring: 210 40% 98%;
@@ -84,5 +84,11 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .badge-medium-risk {
+    @apply border-transparent bg-[#F57C00] text-primary-foreground hover:bg-[#F57C00]/80;
   }
 }

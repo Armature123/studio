@@ -86,6 +86,7 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
           />
           {!file ? (
              <label
+                htmlFor="file-upload"
                 className={`flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-card hover:bg-muted transition-colors ${isDragging ? 'border-primary' : 'border-border'}`}
                 onDragEnter={handleDragEnter}
                 onDragLeave={handleDragLeave}
