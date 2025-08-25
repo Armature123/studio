@@ -16,6 +16,11 @@ const GenerateActionableSummaryInputSchema = z.object({
   documentText: z
     .string()
     .describe('The text content of the legal document to be analyzed.'),
+  language: z
+    .string()
+    .optional()
+    .default('English')
+    .describe('The language for the summary.'),
 });
 export type GenerateActionableSummaryInput = z.infer<
   typeof GenerateActionableSummaryInputSchema
@@ -43,6 +48,8 @@ const prompt = ai.definePrompt({
   input: {schema: GenerateActionableSummaryInputSchema},
   output: {schema: GenerateActionableSummaryOutputSchema},
   prompt: `You are an AI assistant specializing in legal document analysis. Your task is to generate an actionable summary of key data points and action items extracted from the legal document provided. Categorize the information by importance and relevance for a Startup/SMB.
+
+Generate the summary in the following language: {{{language}}}.
 
 Document Text: {{{documentText}}}
 

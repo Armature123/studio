@@ -43,6 +43,7 @@ By: John Smith, Manager
 export async function analyzeDocument(formData: FormData) {
   const file = formData.get('document') as File;
   let documentText = formData.get('documentText') as string;
+  const language = formData.get('language') as string || 'English';
   
   if (!file && !documentText) {
     return { error: 'No document or text provided.' };
@@ -63,7 +64,7 @@ export async function analyzeDocument(formData: FormData) {
 
   try {
     const [summaryResult, metadataResult, risksResult] = await Promise.all([
-      generateActionableSummary({ documentText }),
+      generateActionableSummary({ documentText, language }),
       extractLegalMetadata({ documentText }),
       highlightRisks({ documentText, companyType }),
     ]);

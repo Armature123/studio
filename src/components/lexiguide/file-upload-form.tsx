@@ -1,20 +1,38 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { FileUp, FileText, X, ClipboardPaste } from "lucide-react";
+import { FileUp, FileText, X, ClipboardPaste, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 interface FileUploadFormProps {
   onAnalyze: (formData: FormData) => void;
 }
 
+const indianLanguages = [
+  { value: 'English', label: 'English' },
+  { value: 'Hindi', label: 'Hindi' },
+  { value: 'Bengali', label: 'Bengali' },
+  { value: 'Telugu', label: 'Telugu' },
+  { value: 'Marathi', label: 'Marathi' },
+  { value: 'Tamil', label: 'Tamil' },
+  { value: 'Urdu', label: 'Urdu' },
+  { value: 'Gujarati', label: 'Gujarati' },
+  { value: 'Kannada', label: 'Kannada' },
+  { value: 'Odia', label: 'Odia' },
+  { value: 'Malayalam', label: 'Malayalam' },
+  { value: 'Punjabi', label: 'Punjabi' },
+];
+
 export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
   const [file, setFile] = useState<File | null>(null);
   const [text, setText] = useState("");
+  const [language, setLanguage] = useState("English");
   const [activeTab, setActiveTab] = useState("file");
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -56,6 +74,7 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData();
+    formData.append("language", language);
     
     if (activeTab === 'file') {
       if (!file) {
@@ -84,71 +103,90 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
         <CardDescription>Upload a document or paste text to get AI-powered insights, summaries, and risk assessments.</CardDescription>
       </CardHeader>
       <CardContent>
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="file">
-              <FileUp className="mr-2 h-4 w-4" />
-              Upload File
-            </TabsTrigger>
-            <TabsTrigger value="text">
-              <ClipboardPaste className="mr-2 h-4 w-4" />
-              Paste Text
-            </TabsTrigger>
-          </TabsList>
-          <form onSubmit={handleSubmit} className="space-y-6 mt-6">
-            <TabsContent value="file" className="m-0 p-0">
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={(e) => handleFileChange(e.target.files ? e.target.files[0] : null)}
-                className="hidden"
-                accept=".pdf,.doc,.docx" 
-              />
-              {!file ? (
-                 <label
-                    htmlFor="file-upload"
-                    className={`flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-card hover:bg-muted transition-colors ${isDragging ? 'border-primary' : 'border-border'}`}
-                    onDragEnter={handleDragEnter}
-                    onDragLeave={handleDragLeave}
-                    onDragOver={handleDragOver}
-                    onDrop={handleDrop}
-                    onClick={() => fileInputRef.current?.click()}
-                 >
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center">
-                        <FileUp className="w-10 h-10 mb-3 text-muted-foreground" />
-                        <p className="mb-2 text-sm text-muted-foreground"><span className="font-semibold text-primary">Click to upload</span> or drag and drop</p>
-                        <p className="text-xs text-muted-foreground">PDF or DOCX (Demo only)</p>
-                    </div>
-                </label>
-              ) : (
-                <div className="flex items-center justify-between w-full h-24 px-4 border rounded-lg bg-muted/50">
-                    <div className="flex items-center gap-3">
-                        <FileText className="h-8 w-8 text-primary" />
-                        <div>
-                            <p className="text-sm font-medium truncate max-w-xs">{file.name}</p>
-                            <p className="text-xs text-muted-foreground">{(file.size / 1024).toFixed(2)} KB</p>
-                        </div>
-                    </div>
-                    <Button variant="ghost" size="icon" onClick={() => setFile(null)}>
-                        <X className="h-5 w-5" />
-                    </Button>
-                </div>
-              )}
-            </TabsContent>
-            <TabsContent value="text" className="m-0 p-0">
-               <Textarea 
-                placeholder="Paste your legal document text here..." 
-                className="h-48"
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-               />
-            </TabsContent>
-            
-            <Button type="submit" className="w-full" size="lg" disabled={(activeTab === 'file' && !file) || (activeTab === 'text' && !text.trim())}>
-              Analyze Document
-            </Button>
-          </form>
-        </Tabs>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="file">
+                <FileUp className="mr-2 h-4 w-4" />
+                Upload File
+              </TabsTrigger>
+              <TabsTrigger value="text">
+                <ClipboardPaste className="mr-2 h-4 w-4" />
+                Paste Text
+              </TabsTrigger>
+            </TabsList>
+            <div className="mt-6 space-y-4">
+              <TabsContent value="file" className="m-0 p-0">
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={(e) => handleFileChange(e.target.files ? e.target.files[0] : null)}
+                  className="hidden"
+                  accept=".pdf,.doc,.docx" 
+                />
+                {!file ? (
+                  <label
+                      htmlFor="file-upload"
+                      className={`flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-card hover:bg-muted transition-colors ${isDragging ? 'border-primary' : 'border-border'}`}
+                      onDragEnter={handleDragEnter}
+                      onDragLeave={handleDragLeave}
+                      onDragOver={handleDragOver}
+                      onDrop={handleDrop}
+                      onClick={() => fileInputRef.current?.click()}
+                  >
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center">
+                          <FileUp className="w-10 h-10 mb-3 text-muted-foreground" />
+                          <p className="mb-2 text-sm text-muted-foreground"><span className="font-semibold text-primary">Click to upload</span> or drag and drop</p>
+                          <p className="text-xs text-muted-foreground">PDF or DOCX (Demo only)</p>
+                      </div>
+                  </label>
+                ) : (
+                  <div className="flex items-center justify-between w-full h-24 px-4 border rounded-lg bg-muted/50">
+                      <div className="flex items-center gap-3">
+                          <FileText className="h-8 w-8 text-primary" />
+                          <div>
+                              <p className="text-sm font-medium truncate max-w-xs">{file.name}</p>
+                              <p className="text-xs text-muted-foreground">{(file.size / 1024).toFixed(2)} KB</p>
+                          </div>
+                      </div>
+                      <Button variant="ghost" size="icon" onClick={() => setFile(null)}>
+                          <X className="h-5 w-5" />
+                      </Button>
+                  </div>
+                )}
+              </TabsContent>
+              <TabsContent value="text" className="m-0 p-0">
+                <Textarea 
+                  placeholder="Paste your legal document text here..." 
+                  className="h-48"
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                />
+              </TabsContent>
+            </div>
+          </Tabs>
+
+          <div className="space-y-2">
+              <Label htmlFor="language-select" className="flex items-center gap-2">
+                  <Languages className="h-4 w-4" />
+                  Summary Language
+              </Label>
+              <Select value={language} onValueChange={setLanguage}>
+                  <SelectTrigger id="language-select">
+                      <SelectValue placeholder="Select language" />
+                  </SelectTrigger>
+                  <SelectContent>
+                      {indianLanguages.map(lang => (
+                          <SelectItem key={lang.value} value={lang.value}>{lang.label}</SelectItem>
+                      ))}
+                  </SelectContent>
+              </Select>
+          </div>
+          
+          <Button type="submit" className="w-full" size="lg" disabled={(activeTab === 'file' && !file) || (activeTab === 'text' && !text.trim())}>
+            Analyze Document
+          </Button>
+        </form>
       </CardContent>
     </Card>
   );
