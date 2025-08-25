@@ -8,10 +8,10 @@ interface RisksSectionProps {
   risks: HighlightRisksOutput["risks"];
 }
 
-const severityConfig: Record<string, { variant: "destructive" | "secondary" | "medium", text: string, icon: string }> = {
-    high: { variant: 'destructive', text: 'High', icon: '🔴'},
-    medium: { variant: 'medium', text: 'Medium', icon: '🟠' },
-    low: { variant: 'secondary', text: 'Low', icon: '🔵' }
+const severityConfig: Record<string, { variant: "destructive" | "secondary" | "medium", text: string }> = {
+    high: { variant: 'destructive', text: 'High' },
+    medium: { variant: 'medium', text: 'Medium' },
+    low: { variant: 'secondary', text: 'Low' }
 }
 
 export function RisksSection({ risks }: RisksSectionProps) {
@@ -37,13 +37,12 @@ export function RisksSection({ risks }: RisksSectionProps) {
       </CardHeader>
       <CardContent className="space-y-4">
         {risks.map((item, index) => {
-            const config = severityConfig[item.severity] || { variant: 'secondary', text: 'Unknown', icon: '⚪️'};
+            const config = severityConfig[item.severity] || { variant: 'secondary', text: 'Unknown'};
             return (
               <Alert key={index} variant={item.severity === 'high' ? "destructive" : "default"}>
                 <div className="flex justify-between items-start">
                   <AlertTitle className="mb-1 flex-grow pr-4">{item.risk}</AlertTitle>
                   <Badge variant={config.variant}>
-                    <span className="mr-2">{config.icon}</span>
                     {config.text}
                   </Badge>
                 </div>
