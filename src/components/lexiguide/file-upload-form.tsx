@@ -7,6 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface FileUploadFormProps {
   onAnalyze: (formData: FormData) => void;
@@ -15,6 +17,7 @@ interface FileUploadFormProps {
 export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
   const [file, setFile] = useState<File | null>(null);
   const [text, setText] = useState("");
+  const [language, setLanguage] = useState("English");
   const [activeTab, setActiveTab] = useState("file");
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -70,6 +73,7 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
       }
       formData.append("documentText", text);
     }
+    formData.append("language", language);
     
     onAnalyze(formData);
   };
@@ -146,6 +150,24 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
               </TabsContent>
             </div>
           </Tabs>
+
+          <div className="space-y-2">
+            <Label htmlFor="language">Summary Language</Label>
+            <Select value={language} onValueChange={setLanguage}>
+                <SelectTrigger id="language" className="w-full">
+                    <SelectValue placeholder="Select language" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="English">English</SelectItem>
+                    <SelectItem value="Kannada">Kannada</SelectItem>
+                    <SelectItem value="Hindi">Hindi</SelectItem>
+                    <SelectItem value="Tamil">Tamil</SelectItem>
+                    <SelectItem value="Spanish">Spanish</SelectItem>
+                    <SelectItem value="French">French</SelectItem>
+                    <SelectItem value="German">German</SelectItem>
+                </SelectContent>
+            </Select>
+          </div>
 
           <Button type="submit" className="w-full mt-6" size="lg" disabled={(activeTab === 'file' && !file) || (activeTab === 'text' && !text.trim())}>
             Analyze Document

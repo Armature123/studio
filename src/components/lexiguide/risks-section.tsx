@@ -8,16 +8,10 @@ interface RisksSectionProps {
   risks: HighlightRisksOutput["risks"];
 }
 
-const severityVariant: Record<string, "destructive" | "secondary" | "medium"> = {
-    high: 'destructive',
-    medium: 'medium',
-    low: 'secondary'
-}
-
-const severityText: Record<string, string> = {
-    high: 'High',
-    medium: 'Medium',
-    low: 'Low'
+const severityConfig: Record<string, { variant: "destructive" | "secondary" | "medium", text: string, icon: string }> = {
+    high: { variant: 'destructive', text: 'High', icon: '🔴'},
+    medium: { variant: 'medium', text: 'Medium', icon: '🟠' },
+    low: { variant: 'secondary', text: 'Low', icon: '🔵' }
 }
 
 export function RisksSection({ risks }: RisksSectionProps) {
@@ -42,18 +36,24 @@ export function RisksSection({ risks }: RisksSectionProps) {
         <CardTitle>Risk Highlights</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {risks.map((item, index) => (
-          <Alert key={index} variant={item.severity === 'high' ? "destructive" : "default"}>
-            <div className="flex justify-between items-start">
-              <AlertTitle className="mb-1 flex-grow pr-4">{item.risk}</AlertTitle>
-              <Badge variant={severityVariant[item.severity] || 'secondary'}>{severityText[item.severity] || 'Unknown'}</Badge>
-            </div>
-            <AlertDescription>
-                {item.explanation}
-                {item.location && <div className="mt-2 text-xs text-muted-foreground"><strong>Location:</strong> {item.location}</div>}
-            </AlertDescription>
-          </Alert>
-        ))}
+        {risks.map((item, index) => {
+            const config = severityConfig[item.severity] || { variant: 'secondary', text: 'Unknown', icon: '⚪️'};
+            return (
+              <Alert key={index} variant={item.severity === 'high' ? "destructive" : "default"}>
+                <div className="flex justify-between items-start">
+                  <AlertTitle className="mb-1 flex-grow pr-4">{item.risk}</AlertTitle>
+                  <Badge variant={config.variant}>
+                    <span className="mr-2">{config.icon}</span>
+                    {config.text}
+                  </Badge>
+                </div>
+                <AlertDescription>
+                    {item.explanation}
+                    {item.location && <div className="mt-2 text-xs text-muted-foreground"><strong>Location:</strong> {item.location}</div>}
+                </AlertDescription>
+              </Alert>
+            );
+        })}
       </CardContent>
     </Card>
   );

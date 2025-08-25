@@ -44,6 +44,7 @@ By: John Smith, Manager
 export async function analyzeDocument(formData: FormData) {
   const file = formData.get('document') as File;
   let documentText = formData.get('documentText') as string;
+  const language = (formData.get('language') as string) || "English";
   
   if (!file && !documentText) {
     return { error: 'No document or text provided.' };
@@ -63,7 +64,8 @@ export async function analyzeDocument(formData: FormData) {
   const companyType = "Startup";
 
   try {
-    const { language } = await detectLanguage({ documentText });
+    // We don't need to detect language if the user has specified it
+    // const { language } = await detectLanguage({ documentText });
 
     const [summaryResult, metadataResult, risksResult] = await Promise.all([
       generateActionableSummary({ documentText, language }),
