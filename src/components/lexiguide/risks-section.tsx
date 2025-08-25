@@ -1,4 +1,4 @@
-import { AlertTriangle, ShieldAlert } from "lucide-react";
+import { AlertTriangle, ShieldAlert, Handshake } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -33,7 +33,7 @@ export function RisksSection({ risks }: RisksSectionProps) {
     <Card>
       <CardHeader className="flex flex-row items-center gap-3 space-y-0">
         <AlertTriangle className="h-6 w-6 text-destructive" />
-        <CardTitle>Risk Highlights</CardTitle>
+        <CardTitle>Risk & Negotiation Highlights</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {risks.map((item, index) => {
@@ -47,8 +47,14 @@ export function RisksSection({ risks }: RisksSectionProps) {
                   </Badge>
                 </div>
                 <AlertDescription>
-                    {item.explanation}
+                    <p>{item.explanation}</p>
                     {item.location && <div className="mt-2 text-xs text-muted-foreground"><strong>Location:</strong> {item.location}</div>}
+                    {item.negotiationAdvice && (
+                      <div className="mt-3 pt-3 border-t border-border/50">
+                        <h4 className="font-semibold flex items-center gap-2 text-sm mb-1"><Handshake className="h-4 w-4" /> Negotiation Advice</h4>
+                        <p className="text-sm text-foreground/80">{item.negotiationAdvice}</p>
+                      </div>
+                    )}
                 </AlertDescription>
               </Alert>
             );

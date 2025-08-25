@@ -29,6 +29,7 @@ const HighlightRisksOutputSchema = z.object({
       explanation: z.string().describe('An explanation of the risk significance and potential impact for a Startup/SMB.'),
       severity: z.enum(['high', 'medium', 'low']).describe('The severity level of the risk.'),
       location: z.string().optional().describe('The location of the risk in the document, e.g. page number or clause.'),
+      negotiationAdvice: z.string().describe('Actionable advice on what to negotiate regarding this risk and how to approach it.'),
     })
   ).describe('A list of potential risks and red flags in the legal document.'),
 });
@@ -42,14 +43,22 @@ const prompt = ai.definePrompt({
   name: 'highlightRisksPrompt',
   input: {schema: HighlightRisksInputSchema},
   output: {schema: HighlightRisksOutputSchema},
-  prompt: `You are an expert legal analyst specializing in identifying risks and red flags in legal documents for {{{companyType}}} companies.
+  prompt: `You are an expert legal analyst specializing in identifying risks and red flags in legal documents for {{{companyType}}} companies. Your analysis must be extremely consistent.
 
-  Analyze the following legal document and extract potential risks and red flags, providing clear explanations of their significance and potential impact for a {{{companyType}}}. Categorize the severity as high, medium, or low.
+  Analyze the following legal document. For each risk, provide:
+  1. A description of the risk.
+  2. An explanation of its significance for a {{{companyType}}}.
+  3. A consistent severity rating based on the following criteria:
+     - **high**: Poses a direct, immediate, and significant financial, legal, or operational threat. Examples: Unlimited liability, ambiguous IP ownership, unfavorable termination clauses.
+     - **medium**: Poses a potential future threat or significant inconvenience. Could lead to disputes or unexpected costs. Examples: Vague scope of work, one-sided indemnification, late payment penalties.
+     - **low**: A minor issue, best practice deviation, or something to be aware of that is unlikely to cause a major problem. Examples: Unilateral changes to terms with notice, standard confidentiality clauses.
+  4. The location in the document (if possible).
+  5. Actionable negotiation advice: What specific terms should be changed, and what is a reasonable alternative to propose?
 
   Document:
-  {{documentText}}
+  {{{documentText}}}
 
-  Format your answer as a JSON object that conforms to the HighlightRisksOutputSchema schema. Include specific locations where possible.
+  Format your answer as a JSON object that conforms to the HighlightRisksOutputSchema schema.
   `,
 });
 
