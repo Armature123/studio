@@ -22,7 +22,7 @@ body {
     --muted-foreground: 210 17% 45%; /* Lighter Steel Grey */
     --accent: 122 47% 34%; /* Emerald Green */
     --accent-foreground: 210 40% 98%;
-    --destructive: 0 63% 51%; /* Red for high risk */
+    --destructive: 0 72% 51%; /* Red for high risk (#D32F2F) */
     --destructive-foreground: 210 40% 98%;
     --border: 210 14.3% 89.8%;
     --input: 210 14.3% 89.8%;
