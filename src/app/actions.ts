@@ -3,6 +3,7 @@
 import { generateActionableSummary } from "@/ai/flows/generate-actionable-summary";
 import { extractLegalMetadata } from "@/ai/flows/extract-legal-metadata";
 import { highlightRisks } from "@/ai/flows/highlight-risks";
+import { detectLanguage } from "@/ai/flows/detect-language";
 
 // As we cannot read file content in this environment, we use a hardcoded sample legal document.
 // In a real application, you would read the content from the uploaded file.
@@ -43,7 +44,6 @@ By: John Smith, Manager
 export async function analyzeDocument(formData: FormData) {
   const file = formData.get('document') as File;
   let documentText = formData.get('documentText') as string;
-  const language = formData.get('language') as string || 'English';
   
   if (!file && !documentText) {
     return { error: 'No document or text provided.' };
@@ -63,6 +63,8 @@ export async function analyzeDocument(formData: FormData) {
   const companyType = "Startup";
 
   try {
+    const { language } = await detectLanguage({ documentText });
+
     const [summaryResult, metadataResult, risksResult] = await Promise.all([
       generateActionableSummary({ documentText, language }),
       extractLegalMetadata({ documentText }),

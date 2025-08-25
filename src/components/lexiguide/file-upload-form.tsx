@@ -1,38 +1,20 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { FileUp, FileText, X, ClipboardPaste, Languages } from "lucide-react";
+import { FileUp, FileText, X, ClipboardPaste } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
 
 interface FileUploadFormProps {
   onAnalyze: (formData: FormData) => void;
 }
 
-const indianLanguages = [
-  { value: 'English', label: 'English' },
-  { value: 'Hindi', label: 'Hindi' },
-  { value: 'Bengali', label: 'Bengali' },
-  { value: 'Telugu', label: 'Telugu' },
-  { value: 'Marathi', label: 'Marathi' },
-  { value: 'Tamil', label: 'Tamil' },
-  { value: 'Urdu', label: 'Urdu' },
-  { value: 'Gujarati', label: 'Gujarati' },
-  { value: 'Kannada', label: 'Kannada' },
-  { value: 'Odia', label: 'Odia' },
-  { value: 'Malayalam', label: 'Malayalam' },
-  { value: 'Punjabi', label: 'Punjabi' },
-];
-
 export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
   const [file, setFile] = useState<File | null>(null);
   const [text, setText] = useState("");
-  const [language, setLanguage] = useState("English");
   const [activeTab, setActiveTab] = useState("file");
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -74,7 +56,6 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("language", language);
     
     if (activeTab === 'file') {
       if (!file) {
@@ -166,24 +147,7 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
             </div>
           </Tabs>
 
-          <div className="space-y-2">
-              <Label htmlFor="language-select" className="flex items-center gap-2">
-                  <Languages className="h-4 w-4" />
-                  Summary Language
-              </Label>
-              <Select value={language} onValueChange={setLanguage}>
-                  <SelectTrigger id="language-select">
-                      <SelectValue placeholder="Select language" />
-                  </SelectTrigger>
-                  <SelectContent>
-                      {indianLanguages.map(lang => (
-                          <SelectItem key={lang.value} value={lang.value}>{lang.label}</SelectItem>
-                      ))}
-                  </SelectContent>
-              </Select>
-          </div>
-          
-          <Button type="submit" className="w-full" size="lg" disabled={(activeTab === 'file' && !file) || (activeTab === 'text' && !text.trim())}>
+          <Button type="submit" className="w-full mt-6" size="lg" disabled={(activeTab === 'file' && !file) || (activeTab === 'text' && !text.trim())}>
             Analyze Document
           </Button>
         </form>
