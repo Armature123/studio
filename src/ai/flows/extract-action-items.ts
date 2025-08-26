@@ -52,7 +52,7 @@ const prompt = ai.definePrompt({
   - **Rights & Protections**: Specific rights or protections granted to a party (e.g., IP ownership, indemnification).
   - **Termination Rules**: Conditions under which the agreement can be ended.
 
-  Each item must be phrased as a clear, actionable sentence. If no information exists in the document for a category, leave it blank by providing an empty array. Never include information that is not present in the document.
+  Each item must be phrased as a clear, actionable sentence. Do not just list every single related sentence; summarize the information concisely. For example, instead of listing three separate payment schedule items, summarize it into one or two clear actions. If no information exists in the document for a category, leave it blank by providing an empty array. Never include information that is not present in the document.
 
   Document:
   {{{documentText}}}
