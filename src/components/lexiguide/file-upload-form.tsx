@@ -1,7 +1,8 @@
+
 "use client";
 
 import { useState, useRef } from "react";
-import { FileUp, FileText, X, ClipboardPaste } from "lucide-react";
+import { FileUp, FileText, X, ClipboardPaste, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,6 +10,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
+import Link from "next/link";
 
 interface FileUploadFormProps {
   onAnalyze: (formData: FormData) => void;
@@ -18,6 +22,8 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
   const [file, setFile] = useState<File | null>(null);
   const [text, setText] = useState("");
   const [language, setLanguage] = useState("English");
+  const [retention, setRetention] = useState("7d");
+  const [consent, setConsent] = useState(false);
   const [activeTab, setActiveTab] = useState("file");
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -74,6 +80,7 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
       formData.append("documentText", text);
     }
     formData.append("language", language);
+    formData.append("retention", retention);
     
     onAnalyze(formData);
   };
@@ -168,8 +175,51 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
                 </SelectContent>
             </Select>
           </div>
+          
+          <Separator />
 
-          <Button type="submit" className="w-full mt-6" size="lg" disabled={(activeTab === 'file' && !file) || (activeTab === 'text' && !text.trim())}>
+          <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <ShieldCheck className="h-6 w-6 text-muted-foreground mt-1"/>
+                <div>
+                    <h4 className="font-medium">Data & Privacy</h4>
+                    <p className="text-sm text-muted-foreground">Your document is processed securely and is not used to train our models. It will be automatically deleted after the selected retention period.</p>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                  <Label htmlFor="retention">Data Retention Period</Label>
+                  <Select value={retention} onValueChange={setRetention}>
+                      <SelectTrigger id="retention" className="w-full">
+                          <SelectValue placeholder="Select retention period" />
+                      </SelectTrigger>
+                      <SelectContent>
+                          <SelectItem value="24h">24 Hours</SelectItem>
+                          <SelectItem value="7d">7 Days (Default)</SelectItem>
+                          <SelectItem value="30d">30 Days</SelectItem>
+                      </SelectContent>
+                  </Select>
+              </div>
+
+              <div className="flex items-start space-x-3">
+                  <Checkbox id="consent" checked={consent} onCheckedChange={(checked) => setConsent(checked as boolean)} className="mt-1" />
+                  <div className="grid gap-1.5 leading-none">
+                      <Label htmlFor="consent" className="font-normal">
+                          I acknowledge that this tool provides guidance and not legal advice. I agree to the <Link href="#" className="underline">Terms of Service</Link>.
+                      </Label>
+                  </div>
+              </div>
+          </div>
+
+
+          <Button 
+            type="submit" 
+            className="w-full mt-6" 
+            size="lg" 
+            disabled={
+                !consent ||
+                ((activeTab === 'file' && !file) || (activeTab === 'text' && !text.trim()))
+            }>
             Analyze Document
           </Button>
         </form>

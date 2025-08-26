@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -96,7 +97,7 @@ export default function Home() {
       <footer className="py-6 md:px-8 md:py-0 border-t">
         <div className="container flex flex-col items-center justify-center gap-4 md:h-24 md:flex-row">
             <p className="text-balance text-center text-sm leading-loose text-muted-foreground">
-                Built by Your AI Assistant. General information only — not legal advice; consult a qualified attorney.
+                DISCLAIMER: This tool provides automated analysis and is for informational purposes only. It is not a substitute for professional legal advice. Always consult with a qualified attorney for legal matters.
             </p>
         </div>
       </footer>
