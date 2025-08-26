@@ -1,4 +1,4 @@
-import { CheckSquare, CircleDollarSign, FileCheck, CalendarClock, Gavel } from "lucide-react";
+import { CheckSquare, CircleDollarSign, CalendarClock, Gavel, ShieldCheck, FileWarning } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -11,9 +11,10 @@ interface TasksSectionProps {
 
 const categoryConfig = {
     financial: { title: "Financial Actions", icon: CircleDollarSign },
-    review: { title: "Review & Approval", icon: FileCheck },
     deadlines: { title: "Deadlines & Dates", icon: CalendarClock },
     obligations: { title: "Duties & Obligations", icon: Gavel },
+    rightsProtections: { title: "Rights & Protections", icon: ShieldCheck },
+    terminationRules: { title: "Termination Rules", icon: FileWarning },
 }
 
 const TaskItem = ({ task, id }: { task: { description: string }, id: string }) => (

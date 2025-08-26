@@ -26,9 +26,10 @@ const TaskSchema = z.object({
 const ExtractActionItemsOutputSchema = z.object({
   tasks: z.object({
     financial: z.array(TaskSchema).describe('Tasks related to payments, fees, or any monetary transactions.'),
-    review: z.array(TaskSchema).describe('Tasks that require reviewing, approving, or signing documents or clauses.'),
     deadlines: z.array(TaskSchema).describe('Tasks associated with specific dates or deadlines.'),
     obligations: z.array(TaskSchema).describe('General duties, responsibilities, or obligations outlined in the document.'),
+    rightsProtections: z.array(TaskSchema).describe('Specific rights, protections, or entitlements granted to a party (e.g., intellectual property ownership, indemnification).'),
+    terminationRules: z.array(TaskSchema).describe('Conditions and rules related to the termination of the agreement.'),
   }).describe('A structured list of categorized action items.'),
 });
 export type ExtractActionItemsOutput = z.infer<typeof ExtractActionItemsOutputSchema>;
@@ -42,18 +43,21 @@ const prompt = ai.definePrompt({
   name: 'extractActionItemsPrompt',
   input: {schema: ExtractActionItemsInputSchema},
   output: {schema: ExtractActionItemsOutputSchema},
-  prompt: `You are an expert legal analyst. Your task is to extract actionable tasks and reminders from the provided legal document and categorize them.
+  prompt: `You are an expert legal analyst. You are given a single document. Only use the contents of this document — do not invent, assume, or pull from external knowledge.
 
-  Analyze the document text and identify specific, actionable tasks. Categorize each task into one of the following four categories:
-  - **financial**: Tasks related to payments, fees, costs, or any monetary transactions. (e.g., "Pay the deposit of $10,000")
-  - **review**: Tasks that require reviewing, approving, or signing parts of the document. (e.g., "Review Exhibit A for service scope")
-  - **deadlines**: Tasks or events tied to a specific date or timeframe. (e.g., "Complete the project by October 31, 2024")
-  - **obligations**: General duties, responsibilities, or compliance actions required by the document. (e.g., "Maintain confidentiality of all non-public information")
+  Extract the obligations, payments, dates, duties, rights, and termination conditions exactly as stated in the document, and summarize them into an "Action Center" format with these sections:
+  - **Financial Actions**: Anything related to payments, fees, or monetary transactions.
+  - **Deadlines & Dates**: Specific dates or timeframes for actions.
+  - **Duties & Obligations**: Key responsibilities and duties a party must perform.
+  - **Rights & Protections**: Specific rights or protections granted to a party (e.g., IP ownership, indemnification).
+  - **Termination Rules**: Conditions under which the agreement can be ended.
+
+  Each item must be phrased as a clear, actionable sentence. If no information exists in the document for a category, leave it blank by providing an empty array. Never include information that is not present in the document.
 
   Document:
   {{{documentText}}}
 
-  Format your answer as a single JSON object that conforms to the ExtractActionItemsOutputSchema schema. If no tasks are found for a category, return an empty array for it.
+  Format your answer as a single JSON object that conforms to the ExtractActionItemsOutputSchema schema.
   `,
 });
 
