@@ -15,7 +15,7 @@ export function Dashboard({ data }: DashboardProps) {
         <RisksSection risks={data.risks.risks} />
       </div>
       <div className="lg:col-span-1 space-y-8">
-        <TasksSection summary={data.summary.summary} />
+        <TasksSection tasks={data.actionItems.tasks} />
         <MetadataSection metadata={data.metadata.metadata} />
         <GlossarySection definitions={data.metadata.metadata.definitions} />
       </div>

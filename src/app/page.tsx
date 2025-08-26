@@ -7,6 +7,7 @@ import { Landmark, FileUp } from "lucide-react";
 import type { GenerateActionableSummaryOutput } from "@/ai/flows/generate-actionable-summary";
 import type { ExtractLegalMetadataOutput } from "@/ai/flows/extract-legal-metadata";
 import type { HighlightRisksOutput } from "@/ai/flows/highlight-risks";
+import type { ExtractActionItemsOutput } from "@/ai/flows/extract-action-items";
 import { analyzeDocument } from "@/app/actions";
 import { FileUploadForm } from "@/components/lexiguide/file-upload-form";
 import { Dashboard } from "@/components/lexiguide/dashboard";
@@ -18,6 +19,7 @@ export type AnalysisResult = {
   summary: GenerateActionableSummaryOutput;
   metadata: ExtractLegalMetadataOutput;
   risks: HighlightRisksOutput;
+  actionItems: ExtractActionItemsOutput;
 };
 
 export default function Home() {

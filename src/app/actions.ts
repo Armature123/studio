@@ -4,6 +4,7 @@ import { generateActionableSummary } from "@/ai/flows/generate-actionable-summar
 import { extractLegalMetadata } from "@/ai/flows/extract-legal-metadata";
 import { highlightRisks } from "@/ai/flows/highlight-risks";
 import { detectLanguage } from "@/ai/flows/detect-language";
+import { extractActionItems } from "@/ai/flows/extract-action-items";
 
 // As we cannot read file content in this environment, we use a hardcoded sample legal document.
 // In a real application, you would read the content from the uploaded file.
@@ -67,16 +68,18 @@ export async function analyzeDocument(formData: FormData) {
     // We don't need to detect language if the user has specified it
     // const { language } = await detectLanguage({ documentText });
 
-    const [summaryResult, metadataResult, risksResult] = await Promise.all([
+    const [summaryResult, metadataResult, risksResult, actionItemsResult] = await Promise.all([
       generateActionableSummary({ documentText, language }),
       extractLegalMetadata({ documentText }),
       highlightRisks({ documentText, companyType }),
+      extractActionItems({ documentText }),
     ]);
 
     return {
       summary: summaryResult,
       metadata: metadataResult,
       risks: risksResult,
+      actionItems: actionItemsResult,
     };
   } catch (error) {
     console.error("Error during document analysis:", error);
