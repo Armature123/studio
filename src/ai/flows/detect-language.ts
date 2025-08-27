@@ -12,9 +12,11 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const DetectLanguageInputSchema = z.object({
-  documentText: z
+  documentDataUri: z
     .string()
-    .describe('The text content of the document to be analyzed.'),
+    .describe(
+      "The document to be analyzed, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
+    ),
 });
 export type DetectLanguageInput = z.infer<typeof DetectLanguageInputSchema>;
 
@@ -32,9 +34,9 @@ const detectLanguagePrompt = ai.definePrompt({
   input: {schema: DetectLanguageInputSchema},
   output: {schema: DetectLanguageOutputSchema},
   prompt: `You are an AI assistant that detects the language of a given text.
-    Analyze the following text and return only the name of the language. For example: "English", "Hindi", "Tamil".
+    Analyze the following document and return only the name of the language. For example: "English", "Hindi", "Tamil".
 
-    Document Text: {{{documentText}}}
+    Document: {{media url=documentDataUri}}
   `,
 });
 

@@ -13,9 +13,11 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const ExtractActionItemsInputSchema = z.object({
-  documentText: z
+  documentDataUri: z
     .string()
-    .describe('The text content of the document to be analyzed.'),
+    .describe(
+      "The document to be analyzed, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
+    ),
 });
 export type ExtractActionItemsInput = z.infer<typeof ExtractActionItemsInputSchema>;
 
@@ -133,7 +135,7 @@ EXAMPLE OUTPUT FORMAT:
 }
 
 Document to analyze:
-{{{documentText}}}
+{{media url=documentDataUri}}
 
 Provide your analysis as a JSON object following the ExtractActionItemsOutputSchema format.`,
 });

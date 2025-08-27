@@ -13,9 +13,11 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const ExtractLegalMetadataInputSchema = z.object({
-  documentText: z
+  documentDataUri: z
     .string()
-    .describe('The text content of the legal document to be analyzed.'),
+    .describe(
+      "The legal document to be analyzed, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
+    ),
 });
 export type ExtractLegalMetadataInput = z.infer<typeof ExtractLegalMetadataInputSchema>;
 
@@ -42,9 +44,9 @@ const extractLegalMetadataPrompt = ai.definePrompt({
   name: 'extractLegalMetadataPrompt',
   input: {schema: ExtractLegalMetadataInputSchema},
   output: {schema: ExtractLegalMetadataOutputSchema},
-  prompt: `You are an AI assistant specialized in legal document analysis. Your task is to extract key metadata, money terms, duties, clauses, risks, dates, and definitions from the provided legal document text.
+  prompt: `You are an AI assistant specialized in legal document analysis. Your task is to extract key metadata, money terms, duties, clauses, risks, dates, and definitions from the provided legal document.
 
-    Legal Document Text: {{{documentText}}}
+    Legal Document: {{media url=documentDataUri}}
 
     Please provide the extracted information in a structured format.
   `,

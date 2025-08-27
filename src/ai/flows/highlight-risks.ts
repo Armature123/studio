@@ -12,9 +12,11 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const HighlightRisksInputSchema = z.object({
-  documentText: z
+  documentDataUri: z
     .string()
-    .describe('The text content of the legal document to analyze.'),
+    .describe(
+      "The legal document to analyze, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
+    ),
   companyType: z
     .string()
     .default('Startup')
@@ -56,7 +58,7 @@ const prompt = ai.definePrompt({
   5. Actionable negotiation advice: What specific terms should be changed, and what is a reasonable alternative to propose?
 
   Document:
-  {{{documentText}}}
+  {{media url=documentDataUri}}
 
   Format your answer as a JSON object that conforms to the HighlightRisksOutputSchema schema.
   `,
