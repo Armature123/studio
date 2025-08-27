@@ -12,9 +12,9 @@ import { extractActionItems } from "@/ai/flows/extract-action-items";
 async function extractTextFromPDF(file: File): Promise<string> {
   try {
     // Dynamically import pdf-parse only when needed
-    const pdfParse = (await import("pdf-parse"));
+    const pdf = (await import("pdf-parse"));
     const arrayBuffer = await file.arrayBuffer();
-    const data = await pdfParse(arrayBuffer);
+    const data = await pdf(arrayBuffer);
     return data.text;
   } catch (error) {
     console.error("Error extracting text from PDF:", error);
