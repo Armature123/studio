@@ -11,8 +11,8 @@ import { extractActionItems } from "@/ai/flows/extract-action-items";
  */
 async function extractTextFromPDF(file: File): Promise<string> {
   try {
-    // Dynamically import pdf-parse only when needed
-    const pdf = (await import("pdf-parse"));
+    // Dynamically import pdf-parse only when needed to avoid server-side issues.
+    const pdf = (await import('pdf-parse')).default;
     const arrayBuffer = await file.arrayBuffer();
     const data = await pdf(arrayBuffer);
     return data.text;
