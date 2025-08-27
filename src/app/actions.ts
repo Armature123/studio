@@ -5,13 +5,14 @@ import { extractLegalMetadata } from "@/ai/flows/extract-legal-metadata";
 import { highlightRisks } from "@/ai/flows/highlight-risks";
 import { detectLanguage } from "@/ai/flows/detect-language";
 import { extractActionItems } from "@/ai/flows/extract-action-items";
-import pdfParse from "pdf-parse";
 
 /**
  * Extracts text content from an uploaded PDF file
  */
 async function extractTextFromPDF(file: File): Promise<string> {
   try {
+    // Dynamically import pdf-parse only when needed
+    const pdfParse = (await import("pdf-parse")).default;
     const arrayBuffer = await file.arrayBuffer();
     const data = await pdfParse(arrayBuffer);
     return data.text;
