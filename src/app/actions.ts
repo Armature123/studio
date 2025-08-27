@@ -5,42 +5,37 @@ import { extractLegalMetadata } from "@/ai/flows/extract-legal-metadata";
 import { highlightRisks } from "@/ai/flows/highlight-risks";
 import { detectLanguage } from "@/ai/flows/detect-language";
 import { extractActionItems } from "@/ai/flows/extract-action-items";
+import pdfParse from "pdf-parse";
 
-// As we cannot read file content in this environment, we use a hardcoded sample legal document.
-// In a real application, you would read the content from the uploaded file.
-const sampleDocumentText = `
-SERVICE AGREEMENT
+/**
+ * Extracts text content from an uploaded PDF file
+ */
+async function extractTextFromPDF(file: File): Promise<string> {
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const data = await pdfParse(arrayBuffer);
+    return data.text;
+  } catch (error) {
+    console.error("Error extracting text from PDF:", error);
+    throw new Error("Failed to extract text from PDF. Please ensure the file is a valid PDF document.");
+  }
+}
 
-This Service Agreement ("Agreement") is made and entered into as of July 26, 2024 ("Effective Date"), by and between Innovate Inc., a Delaware corporation with its principal place of business at 123 Tech Avenue, Suite 100, San Francisco, CA 94105 ("Client"), and Creative Solutions LLC, a California limited liability company with its principal place of business at 456 Design Drive, Los Angeles, CA 90001 ("Provider").
-
-1. SERVICES. Provider agrees to provide the Client with web design and development services as described in Exhibit A attached hereto ("Services"). The project is expected to be completed by October 31, 2024. Any changes to the scope of services must be made in writing and signed by both parties.
-
-2. COMPENSATION. In consideration for the Services, Client shall pay Provider a total fee of $25,000. Payment shall be made in three installments:
-   a. $10,000 upon signing this Agreement.
-   b. $10,000 upon delivery of the initial design mockups.
-   c. $5,000 upon final completion and launch of the website.
-   Late payments will incur a penalty of 1.5% per month.
-
-3. TERM AND TERMINATION. This Agreement shall commence on the Effective Date and continue until the Services are completed. Either party may terminate this Agreement with 30 days written notice if the other party breaches a material term of this Agreement and fails to cure such breach within the notice period. Upon termination, Client shall pay for all services rendered up to the termination date.
-
-4. INTELLECTUAL PROPERTY. Provider agrees that all work product, including designs, code, and other materials created under this Agreement ("Deliverables"), shall be the sole and exclusive property of the Client. Provider shall retain no rights to the Deliverables. This constitutes a "work made for hire."
-
-5. CONFIDENTIALITY. Both parties agree to keep confidential all non-public information obtained from the other party. This obligation shall survive the termination of this Agreement for a period of three years.
-
-6. INDEMNIFICATION. Provider shall indemnify, defend, and hold harmless Client from and against any and all claims, damages, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of any third-party claim that the Deliverables infringe upon any patent, copyright, or trademark.
-
-7. GOVERNING LAW. This Agreement shall be governed by and construed in accordance with the laws of the State of California, without regard to its conflict of laws principles. Any disputes shall be resolved in the state or federal courts located in San Francisco, California.
-
-8. ENTIRE AGREEMENT. This Agreement, including Exhibit A, constitutes the entire agreement between the parties and supersedes all prior agreements and understandings, whether written or oral.
-
-IN WITNESS WHEREOF, the parties have executed this Agreement as of the Effective Date.
-
-Innovate Inc.
-By: Jane Doe, CEO
-
-Creative Solutions LLC
-By: John Smith, Manager
-`;
+/**
+ * Extracts text content from various document formats
+ */
+async function extractDocumentText(file: File): Promise<string> {
+  const fileType = file.type;
+  const fileName = file.name.toLowerCase();
+  
+  if (fileType === "application/pdf" || fileName.endsWith(".pdf")) {
+    return await extractTextFromPDF(file);
+  } else if (fileType === "text/plain" || fileName.endsWith(".txt")) {
+    return await file.text();
+  } else {
+    throw new Error("Unsupported file format. Please upload a PDF or text file.");
+  }
+}
 
 export async function analyzeDocument(formData: FormData) {
   const file = formData.get('document') as File;
@@ -51,16 +46,26 @@ export async function analyzeDocument(formData: FormData) {
     return { error: 'No document or text provided.' };
   }
   
-  // In a real app, you'd use the uploaded file's text. Here we have a fallback for demo purposes.
-  if (file && file.size > 0) {
-    // This is where you would read the file text.
-    // For this demo, we'll just use the sample text if a file is "uploaded".
-    documentText = sampleDocumentText;
-    // documentText = await file.text(); 
-  } else if (!documentText) {
-     return { error: 'The provided text is empty.' };
+  // Extract text from uploaded file or use provided text
+  try {
+    if (file && file.size > 0) {
+      console.log(`Processing uploaded file: ${file.name} (${file.size} bytes)`);
+      documentText = await extractDocumentText(file);
+      
+      if (!documentText || documentText.trim().length === 0) {
+        return { error: 'The uploaded document appears to be empty or contains no extractable text.' };
+      }
+      
+      console.log(`Extracted ${documentText.length} characters from document`);
+    } else if (!documentText || documentText.trim().length === 0) {
+      return { error: 'The provided text is empty.' };
+    }
+  } catch (error) {
+    console.error("Error processing document:", error);
+    return { 
+      error: error instanceof Error ? error.message : 'Failed to process the uploaded document.' 
+    };
   }
-
 
   const companyType = "Startup";
 
