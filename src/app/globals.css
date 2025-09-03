@@ -8,25 +8,25 @@ body {
 
 @layer base {
   :root {
-    --background: 210 27% 96%; /* #F0F4F8 */
-    --foreground: 215 25% 27%; /* #334155 */
+    --background: 220 20% 97%; /* #F1F5F9 - Light Neutral Grey */
+    --foreground: 220 13% 22%; /* #2D3748 - Deep Charcoal Text */
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 27%;
+    --card-foreground: 220 13% 22%;
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 27%;
-    --primary: 217 60% 60%; /* #5C85D6 */
+    --popover-foreground: 220 13% 22%;
+    --primary: 212 71% 62%; /* #4A90E2 - Primary Vibrant Blue */
     --primary-foreground: 0 0% 100%; /* White */
-    --secondary: 215 14% 65%; /* #94A3B8 */
+    --secondary: 215 14% 65%; /* #94A3B8 - Using a previous grey as secondary */
     --secondary-foreground: 215 25% 27%;
-    --muted: 210 27% 96%;
-    --muted-foreground: 215 14% 65%; /* #94A3B8 */
-    --accent: 210 27% 96%; /* #F0F4F8 */
-    --accent-foreground: 217 60% 60%;
-    --destructive: 0 72% 51%; /* Red for high risk (#D32F2F) */
+    --muted: 220 20% 97%;
+    --muted-foreground: 215 14% 65%; 
+    --accent: 38 90% 55%; /* #F5A623 - Warm Action Accent */
+    --accent-foreground: 220 13% 22%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 210 40% 98%;
-    --border: 215 14% 65%; /* #94A3B8 */
-    --input: 215 14% 65%;
-    --ring: 217 60% 60%;
+    --border: 220 20% 91%; /* Derived from Light Neutral Grey */
+    --input: 220 20% 91%;
+    --ring: 212 71% 62%;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
@@ -49,19 +49,19 @@ body {
     --card-foreground: 210 40% 98%;
     --popover: 224 52% 10%;
     --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 224 52% 20%;
+    --primary: 212 71% 62%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 210 17% 35%;
     --secondary-foreground: 210 40% 98%;
     --muted: 224 52% 15%;
     --muted-foreground: 210 17% 65%;
-    --accent: 122 47% 44%;
+    --accent: 38 90% 55%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 63% 51%; /* Red for high risk */
     --destructive-foreground: 210 40% 98%;
     --border: 224 52% 25%;
     --input: 224 52% 25%;
-    --ring: 210 40% 98%;
+    --ring: 212 71% 62%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
