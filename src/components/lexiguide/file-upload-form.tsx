@@ -94,7 +94,7 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
   return (
     <Card className="max-w-2xl mx-auto bg-card">
       <CardHeader className="text-center">
-        <div className="mx-auto bg-accent/10 text-accent rounded-full p-3 w-fit mb-4" style={{ color: '#F5A623' }}>
+        <div className="mx-auto bg-primary/10 text-primary rounded-full p-3 w-fit mb-4">
           <FileUp className="h-8 w-8" />
         </div>
         <CardTitle className="text-foreground">Analyze Your Legal Document</CardTitle>
@@ -108,7 +108,7 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
                 <FileUp className="mr-2 h-4 w-4" />
                 Upload File
               </TabsTrigger>
-              <TabsTrigger value="text" className="data-[state=inactive]:text-primary data-[state=inactive]:bg-white data-[state=inactive]:border-border data-[state=inactive]:border">
+              <TabsTrigger value="text">
                 <ClipboardPaste className="mr-2 h-4 w-4" />
                 Paste Text
               </TabsTrigger>
@@ -125,7 +125,7 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
                 {!file ? (
                   <label
                       htmlFor="file-upload"
-                      className={`flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-background hover:bg-muted transition-colors ${isDragging ? 'border-primary' : 'border-primary'}`}
+                      className={`flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-background hover:bg-muted transition-colors ${isDragging ? 'border-primary' : 'border-border'}`}
                       onDragEnter={handleDragEnter}
                       onDragLeave={handleDragLeave}
                       onDragOver={handleDragOver}
@@ -186,7 +186,7 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
 
           <div className="space-y-4">
               <div className="flex items-start gap-3">
-                <ShieldCheck className="h-6 w-6 mt-1" style={{ color: '#27AE60' }}/>
+                <ShieldCheck className="h-6 w-6 mt-1 text-green-600"/>
                 <div>
                     <h4 className="font-medium text-primary">Data &amp; Privacy</h4>
                     <p className="text-sm text-muted-foreground">Your document is processed securely and is not used to train our models. It will be automatically deleted after the selected retention period.</p>
