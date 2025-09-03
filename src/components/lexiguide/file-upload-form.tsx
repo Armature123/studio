@@ -95,7 +95,7 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
     <Card className="max-w-2xl mx-auto bg-card">
       <CardHeader className="text-center">
         <div className="mx-auto bg-primary/10 text-primary rounded-full p-3 w-fit mb-4">
-          <FileUp className="h-8 w-8" />
+          <FileUp className="h-8 w-8 text-accent" />
         </div>
         <CardTitle className="text-foreground">Analyze Your Legal Document</CardTitle>
         <CardDescription>Upload a document or paste text to get AI-powered insights, summaries, and risk assessments.</CardDescription>
