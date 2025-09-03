@@ -33,26 +33,41 @@ export async function analyzeDocument(formData: FormData) {
   }
 
   const companyType = "Startup";
+  
+  let summaryResult, metadataResult, risksResult, actionItemsResult;
 
   try {
-    const [summaryResult, metadataResult, risksResult, actionItemsResult] = await Promise.all([
-      generateActionableSummary({ documentDataUri, language }),
-      extractLegalMetadata({ documentDataUri }),
-      highlightRisks({ documentDataUri, companyType }),
-      extractActionItems({ documentDataUri }),
-    ]);
-
-    return {
-      summary: summaryResult,
-      metadata: metadataResult,
-      risks: risksResult,
-      actionItems: actionItemsResult,
-    };
-  } catch (error) {
-    console.error("Error during document analysis:", error);
-    return {
-      error:
-        "Failed to analyze the document with our AI. The service may be temporarily unavailable. Please try again later.",
-    };
+    summaryResult = await generateActionableSummary({ documentDataUri, language });
+  } catch (error: any) {
+    console.error("Error generating summary:", error);
+    return { error: `Failed during summary generation: ${error.message}` };
   }
+
+  try {
+    metadataResult = await extractLegalMetadata({ documentDataUri });
+  } catch (error: any) {
+    console.error("Error extracting metadata:", error);
+    return { error: `Failed during metadata extraction: ${error.message}` };
+  }
+
+  try {
+    risksResult = await highlightRisks({ documentDataUri, companyType });
+  } catch (error: any) {
+    console.error("Error highlighting risks:", error);
+    return { error: `Failed during risk analysis: ${error.message}` };
+  }
+
+  try {
+    actionItemsResult = await extractActionItems({ documentDataUri });
+  } catch (error: any) {
+    console.error("Error extracting action items:", error);
+    return { error: `Failed during action item extraction: ${error.message}` };
+  }
+  
+  return {
+    summary: summaryResult,
+    metadata: metadataResult,
+    risks: risksResult,
+    actionItems: actionItemsResult,
+  };
 }
