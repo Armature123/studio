@@ -77,7 +77,8 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
         toast({ variant: "destructive", title: "No text provided", description: "Please paste the document text to analyze."});
         return;
       }
-      formData.append("documentText", text);
+      const textFile = new File([text], "pasted-text.txt", { type: "text/plain" });
+      formData.append("document", textFile);
     }
     formData.append("language", language);
     formData.append("retention", retention);
@@ -86,12 +87,12 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
   };
 
   return (
-    <Card className="max-w-2xl mx-auto">
+    <Card className="max-w-2xl mx-auto bg-card">
       <CardHeader className="text-center">
         <div className="mx-auto bg-primary/10 text-primary rounded-full p-3 w-fit mb-4">
-          <FileUp className="h-8 w-8" />
+          <FileUp className="h-8 w-8 text-primary" />
         </div>
-        <CardTitle>Analyze Your Legal Document</CardTitle>
+        <CardTitle className="text-foreground">Analyze Your Legal Document</CardTitle>
         <CardDescription>Upload a document or paste text to get AI-powered insights, summaries, and risk assessments.</CardDescription>
       </CardHeader>
       <CardContent>
@@ -102,7 +103,7 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
                 <FileUp className="mr-2 h-4 w-4" />
                 Upload File
               </TabsTrigger>
-              <TabsTrigger value="text">
+              <TabsTrigger value="text" className="data-[state=inactive]:text-primary data-[state=inactive]:bg-white data-[state=inactive]:border-border data-[state=inactive]:border">
                 <ClipboardPaste className="mr-2 h-4 w-4" />
                 Paste Text
               </TabsTrigger>
@@ -114,12 +115,12 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
                   ref={fileInputRef}
                   onChange={(e) => handleFileChange(e.target.files ? e.target.files[0] : null)}
                   className="hidden"
-                  accept=".pdf,.doc,.docx" 
+                  accept=".pdf,.doc,.docx,.txt"
                 />
                 {!file ? (
                   <label
                       htmlFor="file-upload"
-                      className={`flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-card hover:bg-muted transition-colors ${isDragging ? 'border-primary' : 'border-border'}`}
+                      className={`flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-card hover:bg-muted transition-colors ${isDragging ? 'border-primary' : 'border-primary'}`}
                       onDragEnter={handleDragEnter}
                       onDragLeave={handleDragLeave}
                       onDragOver={handleDragOver}
@@ -127,9 +128,9 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
                       onClick={() => fileInputRef.current?.click()}
                   >
                       <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center">
-                          <FileUp className="w-10 h-10 mb-3 text-muted-foreground" />
+                          <FileUp className="w-10 h-10 mb-3 text-primary" />
                           <p className="mb-2 text-sm text-muted-foreground"><span className="font-semibold text-primary">Click to upload</span> or drag and drop</p>
-                          <p className="text-xs text-muted-foreground">PDF or DOCX (Demo only)</p>
+                          <p className="text-xs text-muted-foreground">PDF, DOCX, or TXT</p>
                       </div>
                   </label>
                 ) : (
@@ -182,7 +183,7 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
               <div className="flex items-start gap-3">
                 <ShieldCheck className="h-6 w-6 text-muted-foreground mt-1"/>
                 <div>
-                    <h4 className="font-medium">Data & Privacy</h4>
+                    <h4 className="font-medium text-primary">Data &amp; Privacy</h4>
                     <p className="text-sm text-muted-foreground">Your document is processed securely and is not used to train our models. It will be automatically deleted after the selected retention period.</p>
                 </div>
               </div>
@@ -205,7 +206,7 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
                   <Checkbox id="consent" checked={consent} onCheckedChange={(checked) => setConsent(checked as boolean)} className="mt-1" />
                   <div className="grid gap-1.5 leading-none">
                       <Label htmlFor="consent" className="font-normal">
-                          I acknowledge that this tool provides guidance and not legal advice. I agree to the <Link href="#" className="underline">Terms of Service</Link>.
+                          I acknowledge that this tool provides guidance and not legal advice. I agree to the <Link href="#" className="underline text-primary">Terms of Service</Link>.
                       </Label>
                   </div>
               </div>
