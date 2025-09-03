@@ -11,7 +11,7 @@ import type { ExtractActionItemsOutput } from "@/ai/flows/extract-action-items";
 import { analyzeDocument } from "@/app/actions";
 import { FileUploadForm } from "@/components/lexiguide/file-upload-form";
 import { Dashboard } from "@/components/lexiguide/dashboard";
-import { DashboardLoader } from "@/components/lexiguide/dashboard-loader";
+import { AnalysisLoader } from "@/components/lexiguide/analysis-loader";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -31,10 +31,6 @@ export default function Home() {
   const handleAnalyze = async (formData: FormData) => {
     setIsLoading(true);
     setError(null);
-
-    // In a real app, you might want to keep the previous analysis visible
-    // until the new one is ready. For simplicity, we clear it here.
-    // setAnalysis(null); 
 
     try {
       const result = await analyzeDocument(formData);
@@ -81,7 +77,7 @@ export default function Home() {
       </header>
       <main className="flex-1">
         <div className="container py-8">
-          {isLoading && <DashboardLoader />}
+          {isLoading && <AnalysisLoader />}
           {!isLoading && !analysis && (
             <>
               {error && (
