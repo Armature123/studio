@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -5,8 +6,6 @@
  *
  * It includes:
  * - `extractActionItems`: A function to initiate the action item extraction process.
- * - `ExtractActionItemsInput`: The input type definition for the function.
- * - `ExtractActionItemsOutput`: The output type definition for the function.
  */
 
 import {ai} from '@/ai/genkit';

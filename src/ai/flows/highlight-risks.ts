@@ -1,11 +1,10 @@
+
 'use server';
 
 /**
  * @fileOverview An AI agent that highlights potential risks and red flags in a legal document.
  *
  * - highlightRisks - A function that processes a legal document and returns highlighted risks.
- * - HighlightRisksInput - The input type for the highlightRisks function.
- * - HighlightRisksOutput - The return type for the highlightRisks function.
  */
 
 import {ai} from '@/ai/genkit';

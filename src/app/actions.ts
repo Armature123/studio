@@ -1,10 +1,12 @@
+
 "use server";
 
-import { generateActionableSummary } from "@/ai/flows/generate-actionable-summary";
-import { extractLegalMetadata } from "@/ai/flows/extract-legal-metadata";
-import { highlightRisks } from "@/ai/flows/highlight-risks";
+import { generateActionableSummary, GenerateActionableSummaryOutput } from "@/ai/flows/generate-actionable-summary";
+import { extractLegalMetadata, ExtractLegalMetadataOutput } from "@/ai/flows/extract-legal-metadata";
+import { highlightRisks, HighlightRisksOutput } from "@/ai/flows/highlight-risks";
 import { detectLanguage } from "@/ai/flows/detect-language";
-import { extractActionItems } from "@/ai/flows/extract-action-items";
+import { extractActionItems, ExtractActionItemsOutput } from "@/ai/flows/extract-action-items";
+import { chatAboutDocument, ChatAboutDocumentInput, ChatAboutDocumentOutput } from "@/ai/flows/chat-about-document";
 
 async function fileToDataURI(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer();
@@ -34,7 +36,10 @@ export async function analyzeDocument(formData: FormData) {
 
   const companyType = "Startup";
   
-  let summaryResult, metadataResult, risksResult, actionItemsResult;
+  let summaryResult: GenerateActionableSummaryOutput, 
+      metadataResult: ExtractLegalMetadataOutput, 
+      risksResult: HighlightRisksOutput, 
+      actionItemsResult: ExtractActionItemsOutput;
 
   try {
     summaryResult = await generateActionableSummary({ documentDataUri, language });
@@ -70,4 +75,15 @@ export async function analyzeDocument(formData: FormData) {
     risks: risksResult,
     actionItems: actionItemsResult,
   };
+}
+
+
+export async function chatWithDocumentAction(input: ChatAboutDocumentInput): Promise<{answer: ChatAboutDocumentOutput} | {error: string}> {
+  try {
+    const answer = await chatAboutDocument(input);
+    return { answer };
+  } catch (error: any) {
+    console.error("Error in chat flow: ", error);
+    return { error: `Failed to get a response: ${error.message}` };
+  }
 }

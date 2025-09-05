@@ -1,17 +1,23 @@
-import type { AnalysisResult } from "@/app/page";
+
+import type { AnalysisResult } from "@/lib/types";
+import { SummarySection } from "./summary-section";
 import { RisksSection } from "./risks-section";
 import { TasksSection } from "./tasks-section";
 import { MetadataSection } from "./metadata-section";
 import { GlossarySection } from "./glossary-section";
+import { ChatSection } from "./chat-section";
 
 interface DashboardProps {
   data: AnalysisResult;
+  documentDataUri: string;
 }
 
-export function Dashboard({ data }: DashboardProps) {
+export function Dashboard({ data, documentDataUri }: DashboardProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
       <div className="lg:col-span-2 space-y-8">
+        <SummarySection summary={data.summary.summary} />
+        <ChatSection documentDataUri={documentDataUri} />
         <RisksSection risks={data.risks.risks} />
       </div>
       <div className="lg:col-span-1 space-y-8">

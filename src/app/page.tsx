@@ -3,11 +3,7 @@
 
 import { useState } from "react";
 import { Landmark, FileUp } from "lucide-react";
-
-import type { GenerateActionableSummaryOutput } from "@/ai/flows/generate-actionable-summary";
-import type { ExtractLegalMetadataOutput } from "@/ai/flows/extract-legal-metadata";
-import type { HighlightRisksOutput } from "@/ai/flows/highlight-risks";
-import type { ExtractActionItemsOutput } from "@/ai/flows/extract-action-items";
+import type { AnalysisResult } from "@/lib/types";
 import { analyzeDocument } from "@/app/actions";
 import { FileUploadForm } from "@/components/lexiguide/file-upload-form";
 import { Dashboard } from "@/components/lexiguide/dashboard";
@@ -15,24 +11,35 @@ import { AnalysisLoader } from "@/components/lexiguide/analysis-loader";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-export type AnalysisResult = {
-  summary: GenerateActionableSummaryOutput;
-  metadata: ExtractLegalMetadataOutput;
-  risks: HighlightRisksOutput;
-  actionItems: ExtractActionItemsOutput;
-};
-
 export default function Home() {
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
+  const [documentDataUri, setDocumentDataUri] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+  
+  async function fileToDataURI(file: File): Promise<string> {
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const base64 = buffer.toString('base64');
+    return `data:${file.type};base64,${base64}`;
+  }
 
   const handleAnalyze = async (formData: FormData) => {
     setIsLoading(true);
     setError(null);
+    
+    const file = formData.get('document') as File;
+    if (!file) {
+      setError("No file provided");
+      setIsLoading(false);
+      return;
+    }
 
     try {
+      const dataUri = await fileToDataURI(file);
+      setDocumentDataUri(dataUri);
+
       const result = await analyzeDocument(formData);
       if (result.error) {
         throw new Error(result.error);
@@ -55,6 +62,7 @@ export default function Home() {
     setAnalysis(null);
     setError(null);
     setIsLoading(false);
+    setDocumentDataUri(null);
   }
 
   return (
@@ -89,7 +97,7 @@ export default function Home() {
               <FileUploadForm onAnalyze={handleAnalyze} />
             </>
           )}
-          {!isLoading && analysis && <Dashboard data={analysis} />}
+          {!isLoading && analysis && documentDataUri && <Dashboard data={analysis} documentDataUri={documentDataUri} />}
         </div>
       </main>
       <footer className="py-6 md:px-8 md:py-0 border-t">

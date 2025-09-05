@@ -1,11 +1,10 @@
+
 'use server';
 
 /**
  * @fileOverview Generates an actionable summary of key data points and action items from legal documents.
  *
  * - generateActionableSummary - A function that generates the actionable summary.
- * - GenerateActionableSummaryInput - The input type for the generateActionableSummary function.
- * - GenerateActionableSummaryOutput - The return type for the generateActionableSummary function.
  */
 
 import {ai} from '@/ai/genkit';

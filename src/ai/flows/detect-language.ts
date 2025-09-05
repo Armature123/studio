@@ -1,11 +1,10 @@
+
 'use server';
 /**
  * @fileOverview This file defines a Genkit flow for detecting the language of a document.
  *
  * It includes:
  * - `detectLanguage`: A function to initiate the language detection process.
- * - `DetectLanguageInput`: The input type definition for the function.
- * - `DetectLanguageOutput`: The output type definition for the function.
  */
 
 import {ai} from '@/ai/genkit';

@@ -1,7 +1,7 @@
+
 import { FileText, CircleDollarSign, CalendarDays, Gavel } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { ExtractLegalMetadataOutput } from "@/ai/flows/extract-legal-metadata";
+import type { ExtractLegalMetadataOutput } from "@/lib/types";
 
 interface MetadataSectionProps {
   metadata: ExtractLegalMetadataOutput["metadata"];

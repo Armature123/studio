@@ -1,8 +1,9 @@
+
 import { AlertTriangle, Handshake, ShieldAlert } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import type { HighlightRisksOutput } from "@/ai/flows/highlight-risks";
+import type { HighlightRisksOutput } from "@/lib/types";
 
 interface RisksSectionProps {
   risks: HighlightRisksOutput["risks"];

@@ -1,10 +1,11 @@
+
 import { CheckSquare, CircleDollarSign, CalendarClock, Gavel, ShieldCheck, FileWarning, AlertTriangle, Clock, User } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import type { ExtractActionItemsOutput } from "@/ai/flows/extract-action-items";
+import type { ExtractActionItemsOutput } from "@/lib/types";
 
 interface TasksSectionProps {
   tasks: ExtractActionItemsOutput;

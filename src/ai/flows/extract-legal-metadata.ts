@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -5,8 +6,6 @@
  *
  * It includes:
  * - `extractLegalMetadata`: A function to initiate the legal metadata extraction process.
- * - `ExtractLegalMetadataInput`: The input type definition for the function.
- * - `ExtractLegalMetadataOutput`: The output type definition for the function.
  */
 
 import {ai} from '@/ai/genkit';
