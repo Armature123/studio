@@ -7,6 +7,7 @@ import { highlightRisks, HighlightRisksOutput } from "@/ai/flows/highlight-risks
 import { detectLanguage } from "@/ai/flows/detect-language";
 import { extractActionItems, ExtractActionItemsOutput } from "@/ai/flows/extract-action-items";
 import { chatAboutDocument, ChatAboutDocumentInput, ChatAboutDocumentOutput } from "@/ai/flows/chat-about-document";
+import { legalChat, LegalChatInput, LegalChatOutput } from "@/ai/flows/legal-chat-flow";
 
 async function fileToDataURI(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer();
@@ -86,4 +87,14 @@ export async function chatWithDocumentAction(input: ChatAboutDocumentInput): Pro
     console.error("Error in chat flow: ", error);
     return { error: `Failed to get a response: ${error.message}` };
   }
+}
+
+export async function askLegalQuestion(input: LegalChatInput): Promise<{answer: LegalChatOutput} | {error: string}> {
+    try {
+        const answer = await legalChat(input);
+        return { answer };
+    } catch (error: any) {
+        console.error("Error in legal chat flow: ", error);
+        return { error: `Failed to get a response: ${error.message}` };
+    }
 }
