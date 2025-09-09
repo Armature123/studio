@@ -51,12 +51,8 @@ IMPORTANT:
 
 Here is the conversation history:
 {{#each history}}
-{{#if (eq this.role 'user')}}
-User: {{{this.content}}}
-{{/if}}
-{{#if (eq this.role 'model')}}
-AI: {{{this.content}}}
-{{/if}}
+User: {{#if (eq this.role 'user')}}{{{this.content}}}{{/if}}
+AI: {{#if (eq this.role 'model')}}{{{this.content}}}{{/if}}
 {{/each}}
 
 Here is the user's latest question:
