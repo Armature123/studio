@@ -12,7 +12,6 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-export type LegalChatInput = z.infer<typeof LegalChatInputSchema>;
 const LegalChatInputSchema = z.object({
   question: z.string().describe('The legal question from the user.'),
   history: z
@@ -25,11 +24,14 @@ const LegalChatInputSchema = z.object({
     .optional()
     .describe('The chat history.'),
 });
+export type LegalChatInput = z.infer<typeof LegalChatInputSchema>;
 
-export type LegalChatOutput = z.infer<typeof LegalChatOutputSchema>;
+
 const LegalChatOutputSchema = z.object({
   answer: z.string().describe('The answer to the legal question.'),
 });
+export type LegalChatOutput = z.infer<typeof LegalChatOutputSchema>;
+
 
 export async function legalChat(
   input: LegalChatInput
@@ -49,9 +51,10 @@ IMPORTANT:
 
 Here is the conversation history:
 {{#each history}}
-{{#if (this.role === 'user')}}
+{{#if (eq this.role 'user')}}
 User: {{{this.content}}}
-{{else}}
+{{/if}}
+{{#if (eq this.role 'model')}}
 AI: {{{this.content}}}
 {{/if}}
 {{/each}}
