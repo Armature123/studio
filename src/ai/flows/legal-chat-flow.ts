@@ -12,22 +12,28 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
+export type LegalChatInput = z.infer<typeof LegalChatInputSchema>;
 const LegalChatInputSchema = z.object({
   question: z.string().describe('The legal question from the user.'),
-  history: z.array(z.object({
-    role: z.enum(['user', 'model']),
-    content: z.string(),
-  })).optional().describe('The chat history.'),
+  history: z
+    .array(
+      z.object({
+        role: z.enum(['user', 'model']),
+        content: z.string(),
+      })
+    )
+    .optional()
+    .describe('The chat history.'),
 });
-export type LegalChatInput = z.infer<typeof LegalChatInputSchema>;
 
-
+export type LegalChatOutput = z.infer<typeof LegalChatOutputSchema>;
 const LegalChatOutputSchema = z.object({
   answer: z.string().describe('The answer to the legal question.'),
 });
-export type LegalChatOutput = z.infer<typeof LegalChatOutputSchema>;
 
-export async function legalChat(input: LegalChatInput): Promise<LegalChatOutput> {
+export async function legalChat(
+  input: LegalChatInput
+): Promise<LegalChatOutput> {
   return legalChatFlow(input);
 }
 
@@ -35,16 +41,18 @@ const prompt = ai.definePrompt({
   name: 'legalChatPrompt',
   input: {schema: LegalChatInputSchema},
   output: {schema: LegalChatOutputSchema},
-  prompt: `You are an AI assistant specializing in answering legal questions for users in a clear and understandable way.
+  prompt: `You are an AI assistant and an expert on Indian law, specializing in answering legal questions for users in a clear and understandable way. Your knowledge is strictly limited to the legal framework of India.
 
-IMPORTANT: Always include this disclaimer at the very beginning of your first response in any conversation: "DISCLAIMER: I am an AI assistant and this is not legal advice. For any legal matters, please consult with a qualified attorney."
+IMPORTANT:
+- Only provide answers based on Indian legal sections and regulations. Do not reference laws from any other country.
+- Always include this disclaimer at the very beginning of your first response in any conversation: "DISCLAIMER: I am an AI assistant and this is not legal advice. For any legal matters, please consult with a qualified attorney."
 
 Here is the conversation history:
 {{#each history}}
-{{#if (eq role 'user')}}
-User: {{{content}}}
+{{#if (eval "this.role === 'user'")}}
+User: {{{this.content}}}
 {{else}}
-AI: {{{content}}}
+AI: {{{this.content}}}
 {{/if}}
 {{/each}}
 
