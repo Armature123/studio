@@ -51,10 +51,10 @@ IMPORTANT:
 
 Here is the conversation history:
 {{#each history}}
-{{#if (eq this.role 'user')}}
+{{#if (eq role 'user')}}
 User: {{{this.content}}}
 {{/if}}
-{{#if (eq this.role 'model')}}
+{{#if (eq role 'model')}}
 AI: {{{this.content}}}
 {{/if}}
 {{/each}}
