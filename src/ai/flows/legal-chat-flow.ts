@@ -51,10 +51,10 @@ IMPORTANT:
 
 Here is the conversation history:
 {{#each history}}
-{{#if (this.role == 'user')}}
+{{#if (eq this.role 'user')}}
 User: {{{this.content}}}
 {{/if}}
-{{#if (this.role == 'model')}}
+{{#if (eq this.role 'model')}}
 AI: {{{this.content}}}
 {{/if}}
 {{/each}}
@@ -64,6 +64,9 @@ Question: {{{question}}}
 
 Provide your answer.
 `,
+  helpers: {
+    eq: (a: string, b: string) => a === b,
+  },
 });
 
 const legalChatFlow = ai.defineFlow(
