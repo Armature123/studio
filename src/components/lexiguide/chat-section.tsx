@@ -11,13 +11,14 @@ import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import type { ChatAboutDocumentInput, ChatAboutDocumentOutput } from "@/ai/flows/chat-about-document";
 
 interface ChatSectionProps {
   documentDataUri: string;
 }
 
 type Message = {
-  role: "user" | "assistant";
+  role: "user" | "model";
   content: string;
 };
 
@@ -43,7 +44,7 @@ export function ChatSection({ documentDataUri }: ChatSectionProps) {
         throw new Error(result.error);
       }
       
-      const assistantMessage: Message = { role: "assistant", content: result.answer.answer };
+      const assistantMessage: Message = { role: "model", content: result.answer.answer };
       setMessages((prev) => [...prev, assistantMessage]);
 
     } catch (err: any) {
@@ -52,7 +53,7 @@ export function ChatSection({ documentDataUri }: ChatSectionProps) {
         title: "Error",
         description: err.message || "Failed to get a response from the AI.",
       });
-       const assistantMessage: Message = { role: "assistant", content: "Sorry, I was unable to process your request." };
+       const assistantMessage: Message = { role: "model", content: "Sorry, I was unable to process your request." };
        setMessages((prev) => [...prev, assistantMessage]);
 
     } finally {
@@ -85,7 +86,7 @@ export function ChatSection({ documentDataUri }: ChatSectionProps) {
                         message.role === "user" ? "justify-end" : "justify-start"
                         )}
                     >
-                        {message.role === "assistant" && (
+                        {message.role === "model" && (
                             <Avatar className="h-8 w-8">
                                 <AvatarFallback>AI</AvatarFallback>
                             </Avatar>
