@@ -11,8 +11,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { CompareDocumentsOutput } from "@/ai/flows/compare-documents";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { exportReport } from "@/lib/export-utils";
 
 // A component to render the markdown report
 function MarkdownReport({ content }: { content: string }) {
@@ -159,15 +157,6 @@ export default function ComparePage() {
     setIsLoading(false);
   };
   
-  const handleExport = (format: 'pdf' | 'docx' | 'print') => {
-    if (!reportRef.current) {
-        toast({ variant: "destructive", title: "Error", description: "Could not find the report to export." });
-        return;
-    }
-    toast({ title: "Exporting...", description: `Your report is being prepared as a ${format.toUpperCase()} file.` });
-    exportReport(reportRef.current, format, "comparison-report");
-  };
-
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -187,18 +176,6 @@ export default function ComparePage() {
                     <FileUp className="h-4 w-4 mr-2" />
                     Compare New
                 </button>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline">
-                            <Download className="mr-2 h-4 w-4" /> Export
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                        <DropdownMenuItem onSelect={() => handleExport('pdf')}>Export as PDF</DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => handleExport('docx')}>Export as DOCX</DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => handleExport('print')}>Print</DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
                </>
             )}
           </div>
