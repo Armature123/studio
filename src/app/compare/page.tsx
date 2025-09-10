@@ -23,6 +23,13 @@ function MarkdownReport({ content }: { content: string }) {
     return { header, body };
   };
 
+  const renderHTML = (text: string) => {
+    const cleanText = text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Handle markdown bold
+      .replace(/\*(.*?)\*/g, '<em>$1</em>'); // Handle markdown italic
+    return { __html: cleanText };
+  };
+
   return (
     <div className="space-y-8">
       {sections.map((section, index) => {
@@ -40,8 +47,8 @@ function MarkdownReport({ content }: { content: string }) {
                   <thead className="bg-muted/50">
                     <tr>
                       {header.map((h, i) => (
-                        <th key={i} className={`py-3 px-4 text-left text-xs font-medium uppercase tracking-wider ${i === 1 ? 'bg-blue-50/50' : ''} ${i === 2 ? 'bg-purple-50/50' : ''}`}>
-                          {h}
+                        <th key={i} className={`py-3 px-4 text-left text-xs font-medium uppercase tracking-wider ${i === 1 ? 'bg-blue-50/50' : ''} ${i === 2 ? 'bg-purple-50/50' : ''}`}
+                           dangerouslySetInnerHTML={renderHTML(h)}>
                         </th>
                       ))}
                     </tr>
@@ -50,8 +57,8 @@ function MarkdownReport({ content }: { content: string }) {
                     {tableBody.map((row, rIndex) => (
                       <tr key={rIndex}>
                         {row.map((cell, cIndex) => (
-                          <td key={cIndex} className={`py-4 px-4 text-sm align-top ${cIndex === 1 ? 'bg-blue-50/5' : ''} ${cIndex === 2 ? 'bg-purple-50/5' : ''}`}>
-                            {cell.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
+                          <td key={cIndex} className={`py-4 px-4 text-sm align-top ${cIndex === 1 ? 'bg-blue-50/5' : ''} ${cIndex === 2 ? 'bg-purple-50/5' : ''}`}
+                              dangerouslySetInnerHTML={renderHTML(cell)}>
                           </td>
                         ))}
                       </tr>
@@ -64,10 +71,15 @@ function MarkdownReport({ content }: { content: string }) {
         }
         
         if (title.toLowerCase() === 'key differences' || title.toLowerCase() === 'summary') {
+            const htmlBody = body
+              .replace(/\n\*/g, '<br/>&bull;') // Handle bullet points
+              .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+              .replace(/\n/g, '<br />');
+
             return (
               <div key={index} className="prose prose-sm max-w-none">
                 <h3 className="font-semibold text-xl mb-2">{title}</h3>
-                <div className="text-foreground/80" dangerouslySetInnerHTML={{ __html: body.replace(/\n\*/g, '<br/>&bull;').replace(/\n/g, '<br />') }} />
+                <div className="text-foreground/80" dangerouslySetInnerHTML={{ __html: htmlBody }} />
               </div>
             );
         }
