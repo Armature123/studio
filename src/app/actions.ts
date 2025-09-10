@@ -8,6 +8,7 @@ import { detectLanguage } from "@/ai/flows/detect-language";
 import { extractActionItems, ExtractActionItemsOutput } from "@/ai/flows/extract-action-items";
 import { chatAboutDocument, ChatAboutDocumentInput, ChatAboutDocumentOutput } from "@/ai/flows/chat-about-document";
 import { legalChat, LegalChatInput, LegalChatOutput } from "@/ai/flows/legal-chat-flow";
+import { compareDocuments, CompareDocumentsOutput } from "@/ai/flows/compare-documents";
 
 async function fileToDataURI(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer();
@@ -97,4 +98,33 @@ export async function askLegalQuestion(input: LegalChatInput): Promise<{answer: 
         console.error("Error in legal chat flow: ", error);
         return { error: `Failed to get a response: ${error.message}` };
     }
+}
+
+
+export async function compareDocumentsAction(formData: FormData): Promise<{ comparison?: CompareDocumentsOutput; error?: string }> {
+  const fileA = formData.get('documentA') as File;
+  const fileB = formData.get('documentB') as File;
+
+  if (!fileA || !fileB) {
+    return { error: 'Please provide both documents for comparison.' };
+  }
+  
+  try {
+    console.log(`Processing Document A: ${fileA.name} (${fileA.size} bytes)`);
+    console.log(`Processing Document B: ${fileB.name} (${fileB.size} bytes)`);
+
+    const [documentADataUri, documentBDataUri] = await Promise.all([
+      fileToDataURI(fileA),
+      fileToDataURI(fileB)
+    ]);
+    
+    const comparisonResult = await compareDocuments({ documentADataUri, documentBDataUri });
+    return { comparison: comparisonResult };
+
+  } catch (error: any) {
+    console.error("Error during document comparison:", error);
+    return { 
+      error: `Failed to compare documents: ${error.message}` 
+    };
+  }
 }

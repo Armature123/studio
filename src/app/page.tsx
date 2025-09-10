@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { Landmark, FileUp } from "lucide-react";
+import { Landmark, FileUp, Scale } from "lucide-react";
 import type { AnalysisResult } from "@/lib/types";
 import { analyzeDocument } from "@/app/actions";
 import { FileUploadForm } from "@/components/lexiguide/file-upload-form";
@@ -10,6 +10,7 @@ import { Dashboard } from "@/components/lexiguide/dashboard";
 import { AnalysisLoader } from "@/components/lexiguide/analysis-loader";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import Link from "next/link";
 
 export default function Home() {
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
@@ -69,10 +70,14 @@ export default function Home() {
     <div className="flex flex-col min-h-screen bg-background">
       <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center">
-          <div className="mr-4 flex items-center">
+           <Link href="/" className="mr-6 flex items-center">
             <Landmark className="h-6 w-6 mr-2" />
             <h1 className="text-lg font-semibold">LexiGuide</h1>
-          </div>
+          </Link>
+           <nav className="flex items-center space-x-6 text-sm font-medium">
+             <Link href="/" className="text-foreground">Analyze</Link>
+             <Link href="/compare" className="text-muted-foreground transition-colors hover:text-foreground">Compare</Link>
+          </nav>
           <div className="flex flex-1 items-center justify-end">
             {analysis && (
               <button onClick={handleReset} className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
