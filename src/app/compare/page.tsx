@@ -19,18 +19,36 @@ function MarkdownReport({ content }: { content: string }) {
   const parseSection = (sectionText: string) => {
     const firstNewline = sectionText.indexOf('\n');
     const title = sectionText.substring(0, firstNewline).trim();
-    const body = sectionText.substring(firstNewline).trim();
+    let body = sectionText.substring(firstNewline).trim();
+
+    // The disclaimer is a special case without a title
+    if (title.toLowerCase().startsWith('disclaimer:')) {
+        body = title;
+        return { title: 'Disclaimer', body };
+    }
+    
     return { title, body };
   };
   
   const renderHTML = (text: string) => {
     if (!text) return { __html: '' };
-    // Process markdown-style bolding and convert newlines to <br>
+    // Process markdown-style bolding, bullets, and convert newlines to <br>
     const html = text
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/^- /, '')
+      .replace(/^\* /gm, '')
+      .replace(/• /g, '')
       .replace(/\n/g, '<br />');
     return { __html: html };
+  };
+
+  const parseTable = (tableMarkdown: string) => {
+    const rows = tableMarkdown.trim().split('\n').filter(r => r.includes('|'));
+    if (rows.length < 2) return { header: [], body: [] }; // Header and separator line
+
+    const header = rows[0].split('|').slice(1, -1).map(h => h.trim());
+    const tableBody = rows.slice(2).map(row => row.split('|').slice(1, -1).map(c => c.trim() || 'Not specified'));
+
+    return { header, body: tableBody };
   };
 
   return (
@@ -39,11 +57,8 @@ function MarkdownReport({ content }: { content: string }) {
         const { title, body } = parseSection(sectionContent);
 
         if (title.toLowerCase().startsWith('comparison')) {
-          const rows = body.trim().split('\n').filter(r => r.includes('|'));
-          if (rows.length < 3) return null; // Header, separator, and at least one body row
-
-          const header = rows[0].split('|').slice(1, -1).map(h => h.trim());
-          const tableBody = rows.slice(2).map(row => row.split('|').slice(1, -1).map(c => c.trim()));
+          const { header, body: tableBody } = parseTable(body);
+           if (tableBody.length === 0) return null;
 
           return (
             <div key={index}>
@@ -73,22 +88,20 @@ function MarkdownReport({ content }: { content: string }) {
         }
 
         if (title.toLowerCase().startsWith('key differences') || title.toLowerCase().startsWith('summary')) {
-          const listItems = body.split('\n').map(item => item.trim().replace(/^\* /, '')).filter(Boolean);
+          const listItems = body.split('\n').map(item => item.trim()).filter(Boolean);
           return (
             <div key={index}>
               <h3 className="text-xl font-semibold mb-2">{title}</h3>
-              <div className="text-muted-foreground space-y-2">
+              <ul className="list-disc list-inside text-muted-foreground space-y-2">
                 {listItems.map((item, itemIndex) => (
-                    // Using a div instead of ul/li to better handle the <br> from renderHTML
-                    <div key={itemIndex} dangerouslySetInnerHTML={renderHTML(`• ${item}`)}></div>
+                    <li key={itemIndex} dangerouslySetInnerHTML={renderHTML(item)}></li>
                 ))}
-              </div>
+              </ul>
             </div>
           );
         }
 
-        // Handler for disclaimer
-        if (body.toLowerCase().startsWith('disclaimer:')) {
+        if (title.toLowerCase() === 'disclaimer') {
            return (
             <div key={index} className="text-xs text-muted-foreground pt-4 border-t" dangerouslySetInnerHTML={renderHTML(body)}>
             </div>
@@ -199,5 +212,3 @@ export default function ComparePage() {
     </div>
   );
 }
-
-    
