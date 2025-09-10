@@ -32,12 +32,10 @@ function MarkdownReport({ content }: { content: string }) {
   
   const renderHTML = (text: string) => {
     if (!text) return { __html: '' };
-    // Process markdown-style bolding, bullets, and convert newlines to <br>
+    // Process markdown-style bolding and remove asterisks
     const html = text
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold
-      .replace(/\* (.*?)/g, '$1') // Bullets
-      .replace(/• (.*?)/g, '$1') // Bullets
-      .replace(/\n/g, '<br />'); // Newlines
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*/g, ''); // Remove stray asterisks
     return { __html: html };
   };
 
