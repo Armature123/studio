@@ -16,35 +16,44 @@ import { exportReport } from "@/lib/export-utils";
 
 // A component to render the markdown report
 function MarkdownReport({ content }: { content: string }) {
-  const sections = content.split('### ').filter(s => s.trim() !== '');
+  const sections = content.split(/(?=###\s)/).filter(s => s.trim() !== '');
 
   const parseSection = (sectionText: string) => {
     const firstNewline = sectionText.indexOf('\n');
-    const title = sectionText.substring(0, firstNewline).trim();
+    const title = sectionText.substring(0, firstNewline).replace(/###\s/,'').trim();
     let body = sectionText.substring(firstNewline).trim();
     
     if (title.toLowerCase().startsWith('disclaimer:')) {
         body = title;
-        return { title: 'Disclaimer', body };
+        return { type: 'disclaimer', title: 'Disclaimer', body };
     }
-    
-    return { title, body };
+    if (title.toLowerCase() === 'comparison') {
+      return { type: 'table', title, body };
+    }
+    if (title.toLowerCase() === 'key differences' || title.toLowerCase() === 'summary') {
+      return { type: 'list', title, body };
+    }
+
+    return { type: 'unknown', title, body };
   };
   
   const renderHTML = (text: string) => {
     if (!text) return { __html: '' };
     const html = text
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*/g, '');
+      .replace(/\*(.*?)\*/g, '<em>$1</em>');
     return { __html: html };
   };
 
   const parseTable = (tableMarkdown: string) => {
-    const rows = tableMarkdown.trim().split('\n').filter(r => r.includes('|'));
+    const rows = tableMarkdown.trim().split('\n').map(r => r.trim()).filter(r => r.includes('|'));
     if (rows.length < 2) return { header: [], body: [] };
 
     const header = rows[0].split('|').slice(1, -1).map(h => h.trim());
-    const tableBody = rows.slice(2).map(row => row.split('|').slice(1, -1).map(c => c.trim() || 'Not specified'));
+    // The second row is the separator `| :--- | :--- | :--- |`
+    const tableBody = rows.slice(2).map(row => 
+        row.split('|').slice(1, -1).map(c => c.trim() || 'Not specified')
+    );
 
     return { header, body: tableBody };
   };
@@ -52,9 +61,9 @@ function MarkdownReport({ content }: { content: string }) {
   return (
     <div className="space-y-8">
       {sections.map((sectionContent, index) => {
-        const { title, body } = parseSection(sectionContent);
+        const { type, title, body } = parseSection(sectionContent);
         
-        if (title.toLowerCase().startsWith('comparison')) {
+        if (type === 'table') {
           const { header, body: tableBody } = parseTable(body);
            if (tableBody.length === 0) return null;
 
@@ -85,8 +94,8 @@ function MarkdownReport({ content }: { content: string }) {
           );
         }
 
-        if (title.toLowerCase().startsWith('key differences') || title.toLowerCase().startsWith('summary')) {
-          const listItems = body.split('\n').map(item => item.replace(/^[\*•] /,'').trim()).filter(Boolean);
+        if (type === 'list') {
+          const listItems = body.split('\n').map(item => item.replace(/^[\*•-]\s/,'').trim()).filter(Boolean);
           return (
             <div key={index}>
               <h3 className="text-xl font-semibold mb-2">{title}</h3>
@@ -98,8 +107,8 @@ function MarkdownReport({ content }: { content: string }) {
             </div>
           );
         }
-
-        if (title.toLowerCase() === 'disclaimer') {
+        
+        if (type === 'disclaimer') {
            return (
             <div key={index} className="text-xs text-muted-foreground pt-4 border-t" dangerouslySetInnerHTML={renderHTML(body)}>
             </div>
