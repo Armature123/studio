@@ -19,11 +19,11 @@ type Message = {
 };
 
 interface LegalChatbotWidgetProps {
-    documentDataUri?: string;
+    documentDataUri: string | null;
 }
 
 function ChatContent({ documentDataUri, messages, setMessages, input, setInput, isLoading, setIsLoading, title, placeholder }: {
-    documentDataUri?: string;
+    documentDataUri: string | null;
     messages: Message[];
     setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
     input: string;
@@ -38,7 +38,10 @@ function ChatContent({ documentDataUri, messages, setMessages, input, setInput, 
 
     useEffect(() => {
         if (scrollAreaRef.current) {
-            scrollAreaRef.current.scrollTo({ top: scrollAreaRef.current.scrollHeight, behavior: 'smooth' });
+            const scrollable = scrollAreaRef.current.querySelector('div[data-radix-scroll-area-viewport]');
+            if (scrollable) {
+                scrollable.scrollTo({ top: scrollable.scrollHeight, behavior: 'smooth' });
+            }
         }
     }, [messages]);
     
@@ -82,8 +85,8 @@ function ChatContent({ documentDataUri, messages, setMessages, input, setInput, 
 
     return (
         <div className="flex flex-col h-full">
-            <ScrollArea className="flex-1" ref={scrollAreaRef}>
-                <div className="p-4 space-y-4">
+            <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
+                <div className="space-y-4">
                     {messages.length === 0 && (
                         <div className="text-center text-muted-foreground pt-24">
                             <Bot className="h-12 w-12 mx-auto mb-2 opacity-50" />

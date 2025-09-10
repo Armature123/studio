@@ -13,16 +13,13 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Link from "next/link";
 import { LegalChatbotWidget } from "@/components/lexiguide/legal-chatbot-widget";
 
-interface HomeProps {
-  setDocumentDataUri?: (uri: string | null) => void;
-}
-
-export default function Home({ setDocumentDataUri }: HomeProps) {
+export default function Home() {
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
-  
+  const [documentDataUri, setDocumentDataUri] = useState<string | null>(null);
+
   async function fileToDataURI(file: File): Promise<string> {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
@@ -33,7 +30,7 @@ export default function Home({ setDocumentDataUri }: HomeProps) {
   const handleAnalyze = async (formData: FormData) => {
     setIsLoading(true);
     setError(null);
-    setDocumentDataUri?.(null);
+    setDocumentDataUri(null);
     
     const file = formData.get('document') as File;
     if (!file) {
@@ -44,7 +41,7 @@ export default function Home({ setDocumentDataUri }: HomeProps) {
 
     try {
       const dataUri = await fileToDataURI(file);
-      setDocumentDataUri?.(dataUri);
+      setDocumentDataUri(dataUri);
 
       const result = await analyzeDocument(formData);
       if (result.error) {
@@ -68,7 +65,7 @@ export default function Home({ setDocumentDataUri }: HomeProps) {
     setAnalysis(null);
     setError(null);
     setIsLoading(false);
-    setDocumentDataUri?.(null);
+    setDocumentDataUri(null);
   }
 
   return (
@@ -117,6 +114,7 @@ export default function Home({ setDocumentDataUri }: HomeProps) {
             </p>
         </div>
       </footer>
+      {analysis && <LegalChatbotWidget documentDataUri={documentDataUri} />}
     </div>
   );
 }
