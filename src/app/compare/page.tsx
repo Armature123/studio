@@ -25,8 +25,8 @@ function MarkdownReport({ content }: { content: string }) {
 
   const renderHTML = (text: string) => {
     const cleanText = text
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Handle markdown bold
-      .replace(/\*(.*?)\*/g, '<em>$1</em>'); // Handle markdown italic
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>');
     return { __html: cleanText };
   };
 
@@ -73,7 +73,8 @@ function MarkdownReport({ content }: { content: string }) {
         if (title.toLowerCase() === 'key differences' || title.toLowerCase() === 'summary') {
             const htmlBody = body
               .replace(/\n\*/g, '<br/>&bull;') // Handle bullet points
-              .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+              .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Handle bold
+              .replace(/\*/g, '') // Remove stray asterisks for bullets
               .replace(/\n/g, '<br />');
 
             return (
