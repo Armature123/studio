@@ -52,7 +52,10 @@ function FileDropZone({ file, setFile, title, id }: FileDropZoneProps) {
 
   return (
     <div className="space-y-2">
-      <Label htmlFor={id}>{title}</Label>
+      <Label htmlFor={id} className={cn(
+        'text-lg font-semibold',
+        id === 'file-a' ? 'text-blue-600' : 'text-purple-600'
+      )}>{title}</Label>
        <input
           type="file"
           id={id}
@@ -84,7 +87,7 @@ function FileDropZone({ file, setFile, title, id }: FileDropZoneProps) {
               <div className="flex items-center gap-3">
                   <FileText className="h-8 w-8 text-primary" />
                   <div>
-                      <p className="text-sm font-medium truncate max-w-xs">{file.name}</p>
+                      <p className="text-sm font-medium truncate max-w-[200px]">{file.name}</p>
                       <p className="text-xs text-muted-foreground">{(file.size / 1024).toFixed(2)} KB</p>
                   </div>
               </div>
@@ -120,14 +123,14 @@ export function CompareDocumentsForm({ onCompare }: CompareDocumentsFormProps) {
     <Card className="max-w-3xl mx-auto bg-card">
       <CardHeader className="text-center">
         <div className="mx-auto bg-primary/10 text-primary rounded-full p-3 w-fit mb-4">
-          <Scale className="h-8 w-8 text-accent" />
+          <Scale className="h-8 w-8" />
         </div>
-        <CardTitle className="text-foreground">Compare Legal Documents</CardTitle>
-        <CardDescription>Upload two documents to get a side-by-side comparison of key terms and clauses.</CardDescription>
+        <CardTitle className="text-3xl font-bold tracking-tight">Compare Legal Documents</CardTitle>
+        <CardDescription className="text-lg text-muted-foreground">Upload two documents to get a side-by-side comparison of key terms and clauses.</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-lg border bg-background/50">
             <FileDropZone file={fileA} setFile={setFileA} title="Document A" id="file-a" />
             <FileDropZone file={fileB} setFile={setFileB} title="Document B" id="file-b" />
           </div>
@@ -136,7 +139,7 @@ export function CompareDocumentsForm({ onCompare }: CompareDocumentsFormProps) {
               <div className="flex items-start gap-3">
                 <ShieldCheck className="h-6 w-6 mt-1 text-green-600"/>
                 <div>
-                    <h4 className="font-medium text-primary">Data & Privacy</h4>
+                    <h4 className="font-medium">Data & Privacy</h4>
                     <p className="text-sm text-muted-foreground">Your documents are processed securely and are not used to train our models. They will be automatically deleted after analysis.</p>
                 </div>
               </div>

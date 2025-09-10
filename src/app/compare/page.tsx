@@ -50,8 +50,8 @@ function MarkdownReport({ content }: { content: string }) {
                     {tableBody.map((row, rIndex) => (
                       <tr key={rIndex}>
                         {row.map((cell, cIndex) => (
-                          <td key={cIndex} className="py-4 px-4 text-sm align-top">
-                            {cell}
+                          <td key={cIndex} className={`py-4 px-4 text-sm align-top ${cIndex === 1 ? 'bg-blue-50/5' : ''} ${cIndex === 2 ? 'bg-purple-50/5' : ''}`}>
+                            {cell.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
                           </td>
                         ))}
                       </tr>
@@ -62,17 +62,27 @@ function MarkdownReport({ content }: { content: string }) {
             </div>
           );
         }
+        
+        if (title.toLowerCase() === 'key differences' || title.toLowerCase() === 'summary') {
+            return (
+              <div key={index} className="prose prose-sm max-w-none">
+                <h3 className="font-semibold text-xl mb-2">{title}</h3>
+                <div className="text-foreground/80" dangerouslySetInnerHTML={{ __html: body.replace(/\n\*/g, '<br/>&bull;').replace(/\n/g, '<br />') }} />
+              </div>
+            );
+        }
 
+        // Default handler for disclaimer or any other section
         return (
           <div key={index} className="prose prose-sm max-w-none">
-            <h3 className="font-semibold text-xl mb-2">{title}</h3>
-            <div dangerouslySetInnerHTML={{ __html: body.replace(/\n\*/g, '<br/>&bull;').replace(/\n/g, '<br />') }} />
+             <div className="text-xs text-muted-foreground pt-4 border-t" dangerouslySetInnerHTML={{ __html: body.replace(/\n/g, '<br />') }} />
           </div>
         );
       })}
     </div>
   );
 }
+
 
 export default function ComparePage() {
   const [comparison, setComparison] = useState<CompareDocumentsOutput | null>(null);
@@ -146,7 +156,7 @@ export default function ComparePage() {
             </>
           )}
           {!isLoading && comparison && (
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-5xl mx-auto">
               <div className="flex flex-col items-center text-center mb-8">
                 <div className="mb-4 flex items-center justify-center rounded-full bg-primary/10 p-3">
                     <Scale className="h-8 w-8 text-primary" />
