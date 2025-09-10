@@ -20,7 +20,7 @@ function MarkdownReport({ content }: { content: string }) {
     const firstNewline = sectionText.indexOf('\n');
     const title = sectionText.substring(0, firstNewline).trim();
     let body = sectionText.substring(firstNewline).trim();
-
+    
     // The disclaimer is a special case without a title
     if (title.toLowerCase().startsWith('disclaimer:')) {
         body = title;
@@ -34,10 +34,10 @@ function MarkdownReport({ content }: { content: string }) {
     if (!text) return { __html: '' };
     // Process markdown-style bolding, bullets, and convert newlines to <br>
     const html = text
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/^\* /gm, '')
-      .replace(/• /g, '')
-      .replace(/\n/g, '<br />');
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold
+      .replace(/\* (.*?)/g, '$1') // Bullets
+      .replace(/• (.*?)/g, '$1') // Bullets
+      .replace(/\n/g, '<br />'); // Newlines
     return { __html: html };
   };
 
@@ -55,7 +55,7 @@ function MarkdownReport({ content }: { content: string }) {
     <div className="space-y-8">
       {sections.map((sectionContent, index) => {
         const { title, body } = parseSection(sectionContent);
-
+        
         if (title.toLowerCase().startsWith('comparison')) {
           const { header, body: tableBody } = parseTable(body);
            if (tableBody.length === 0) return null;
@@ -88,7 +88,7 @@ function MarkdownReport({ content }: { content: string }) {
         }
 
         if (title.toLowerCase().startsWith('key differences') || title.toLowerCase().startsWith('summary')) {
-          const listItems = body.split('\n').map(item => item.trim()).filter(Boolean);
+          const listItems = body.split('\n').map(item => item.replace(/^[\*•] /,'').trim()).filter(Boolean);
           return (
             <div key={index}>
               <h3 className="text-xl font-semibold mb-2">{title}</h3>
