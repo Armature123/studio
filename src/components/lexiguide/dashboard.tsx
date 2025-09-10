@@ -3,7 +3,6 @@
 
 import { useRef } from 'react';
 import type { AnalysisResult } from "@/lib/types";
-import { SummarySection } from "./summary-section";
 import { RisksSection } from "./risks-section";
 import { TasksSection } from "./tasks-section";
 import { MetadataSection } from "./metadata-section";
@@ -25,7 +24,6 @@ export function Dashboard({ data, documentDataUri }: DashboardProps) {
     <div>
         <div ref={reportRef} id="report" className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             <div className="lg:col-span-2 space-y-8">
-                <SummarySection summary={data.summary.summary} />
                 <ChatSection documentDataUri={documentDataUri} />
                 <RisksSection risks={data.risks.risks} />
             </div>

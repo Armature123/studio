@@ -1,7 +1,6 @@
 
 "use server";
 
-import { generateActionableSummary, GenerateActionableSummaryOutput } from "@/ai/flows/generate-actionable-summary";
 import { extractLegalMetadata, ExtractLegalMetadataOutput } from "@/ai/flows/extract-legal-metadata";
 import { highlightRisks, HighlightRisksOutput } from "@/ai/flows/highlight-risks";
 import { detectLanguage } from "@/ai/flows/detect-language";
@@ -19,7 +18,6 @@ async function fileToDataURI(file: File): Promise<string> {
 
 export async function analyzeDocument(formData: FormData) {
   const file = formData.get('document') as File;
-  const language = (formData.get('language') as string) || "English";
   
   if (!file) {
     return { error: 'No document provided.' };
@@ -38,17 +36,9 @@ export async function analyzeDocument(formData: FormData) {
 
   const companyType = "Startup";
   
-  let summaryResult: GenerateActionableSummaryOutput, 
-      metadataResult: ExtractLegalMetadataOutput, 
+  let metadataResult: ExtractLegalMetadataOutput, 
       risksResult: HighlightRisksOutput, 
       actionItemsResult: ExtractActionItemsOutput;
-
-  try {
-    summaryResult = await generateActionableSummary({ documentDataUri, language });
-  } catch (error: any) {
-    console.error("Error generating summary:", error);
-    return { error: `Failed during summary generation: ${error.message}` };
-  }
 
   try {
     metadataResult = await extractLegalMetadata({ documentDataUri });
@@ -72,7 +62,6 @@ export async function analyzeDocument(formData: FormData) {
   }
   
   return {
-    summary: summaryResult,
     metadata: metadataResult,
     risks: risksResult,
     actionItems: actionItemsResult,
