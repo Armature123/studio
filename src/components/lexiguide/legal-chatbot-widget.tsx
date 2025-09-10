@@ -10,14 +10,18 @@ import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-import { askLegalQuestion } from "@/app/actions";
+import { chatWithDocumentAction, askLegalQuestion } from "@/app/actions";
 
 type Message = {
   role: "user" | "model";
   content: string;
 };
 
-export function LegalChatbotWidget() {
+interface LegalChatbotWidgetProps {
+    documentDataUri?: string;
+}
+
+export function LegalChatbotWidget({ documentDataUri }: LegalChatbotWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -34,8 +38,14 @@ export function LegalChatbotWidget() {
     setIsLoading(true);
 
     try {
-      const chatHistory = messages.map(m => ({role: m.role, content: m.content}));
-      const result = await askLegalQuestion({ question: input, history: chatHistory });
+      let result;
+      if (documentDataUri) {
+         result = await chatWithDocumentAction({ documentDataUri, question: input });
+      } else {
+         const chatHistory = messages.map(m => ({role: m.role, content: m.content}));
+         result = await askLegalQuestion({ question: input, history: chatHistory });
+      }
+      
 
       if (result.error) {
         throw new Error(result.error);
@@ -57,6 +67,10 @@ export function LegalChatbotWidget() {
       setIsLoading(false);
     }
   };
+  
+  const title = documentDataUri ? "Chat About This Document" : "Legal AI Assistant";
+  const description = documentDataUri ? "Ask me anything about the document!" : "Ask any general legal questions.";
+  const placeholder = documentDataUri ? "e.g., What are the payment terms?" : "e.g., What is a non-disclosure agreement?";
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
@@ -64,8 +78,8 @@ export function LegalChatbotWidget() {
             <Card className="w-[350px] h-[500px] flex flex-col shadow-2xl">
                 <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
                     <div className="space-y-1.5">
-                        <CardTitle className="flex items-center gap-2"><Bot className="h-5 w-5" /> Legal AI Assistant</CardTitle>
-                        <CardDescription>Ask any general legal questions.</CardDescription>
+                        <CardTitle className="flex items-center gap-2"><Bot className="h-5 w-5" /> {title}</CardTitle>
+                        <CardDescription>{description}</CardDescription>
                     </div>
                      <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8">
                         <X className="h-4 w-4" />
@@ -77,8 +91,8 @@ export function LegalChatbotWidget() {
                             {messages.length === 0 && (
                                 <div className="text-center text-muted-foreground pt-24">
                                     <Bot className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                                    <p className="text-sm">Ask a legal question to start.</p>
-                                    <p className="text-xs">e.g., "What is a non-disclosure agreement?"</p>
+                                    <p className="text-sm">Ask a question to start.</p>
+                                    <p className="text-xs">{placeholder}</p>
                                 </div>
                             )}
                             {messages.map((message, index) => (

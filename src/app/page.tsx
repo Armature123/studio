@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { Landmark, FileUp, Scale } from "lucide-react";
+import { Landmark, FileUp } from "lucide-react";
 import type { AnalysisResult } from "@/lib/types";
 import { analyzeDocument } from "@/app/actions";
 import { FileUploadForm } from "@/components/lexiguide/file-upload-form";
@@ -11,6 +11,7 @@ import { AnalysisLoader } from "@/components/lexiguide/analysis-loader";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Link from "next/link";
+import { LegalChatbotWidget } from "@/components/lexiguide/legal-chatbot-widget";
 
 export default function Home() {
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
@@ -102,7 +103,7 @@ export default function Home() {
               <FileUploadForm onAnalyze={handleAnalyze} />
             </>
           )}
-          {!isLoading && analysis && documentDataUri && <Dashboard data={analysis} documentDataUri={documentDataUri} />}
+          {!isLoading && analysis && <Dashboard data={analysis} />}
         </div>
       </main>
       <footer className="py-6 md:px-8 md:py-0 border-t">
@@ -112,6 +113,7 @@ export default function Home() {
             </p>
         </div>
       </footer>
+      {analysis && documentDataUri && <LegalChatbotWidget documentDataUri={documentDataUri} />}
     </div>
   );
 }
