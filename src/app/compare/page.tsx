@@ -1,8 +1,8 @@
 
 "use client";
 
-import { useState } from "react";
-import { Landmark, FileUp, Scale, Home } from "lucide-react";
+import { useState, useRef } from "react";
+import { Landmark, FileUp, Scale, Download } from "lucide-react";
 import { compareDocumentsAction } from "@/app/actions";
 import { CompareDocumentsForm } from "@/components/lexiguide/compare-documents-form";
 import { AnalysisLoader } from "@/components/lexiguide/analysis-loader";
@@ -11,6 +11,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { CompareDocumentsOutput } from "@/ai/flows/compare-documents";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { exportReport } from "@/lib/export-utils";
 
 // A component to render the markdown report
 function MarkdownReport({ content }: { content: string }) {
@@ -21,7 +23,6 @@ function MarkdownReport({ content }: { content: string }) {
     const title = sectionText.substring(0, firstNewline).trim();
     let body = sectionText.substring(firstNewline).trim();
     
-    // The disclaimer is a special case without a title
     if (title.toLowerCase().startsWith('disclaimer:')) {
         body = title;
         return { title: 'Disclaimer', body };
@@ -32,16 +33,15 @@ function MarkdownReport({ content }: { content: string }) {
   
   const renderHTML = (text: string) => {
     if (!text) return { __html: '' };
-    // Process markdown-style bolding and remove asterisks
     const html = text
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*/g, ''); // Remove stray asterisks
+      .replace(/\*/g, '');
     return { __html: html };
   };
 
   const parseTable = (tableMarkdown: string) => {
     const rows = tableMarkdown.trim().split('\n').filter(r => r.includes('|'));
-    if (rows.length < 2) return { header: [], body: [] }; // Header and separator line
+    if (rows.length < 2) return { header: [], body: [] };
 
     const header = rows[0].split('|').slice(1, -1).map(h => h.trim());
     const tableBody = rows.slice(2).map(row => row.split('|').slice(1, -1).map(c => c.trim() || 'Not specified'));
@@ -118,6 +118,8 @@ export default function ComparePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+  const reportRef = useRef<HTMLDivElement>(null);
+
 
   const handleCompare = async (formData: FormData) => {
     setIsLoading(true);
@@ -147,6 +149,15 @@ export default function ComparePage() {
     setError(null);
     setIsLoading(false);
   };
+  
+  const handleExport = (format: 'pdf' | 'docx' | 'print') => {
+    if (!reportRef.current) {
+        toast({ variant: "destructive", title: "Error", description: "Could not find the report to export." });
+        return;
+    }
+    toast({ title: "Exporting...", description: `Your report is being prepared as a ${format.toUpperCase()} file.` });
+    exportReport(reportRef.current, format, "comparison-report");
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -160,12 +171,26 @@ export default function ComparePage() {
              <Link href="/" className="text-muted-foreground transition-colors hover:text-foreground">Analyze</Link>
              <Link href="/compare" className="text-foreground">Compare</Link>
           </nav>
-          <div className="flex flex-1 items-center justify-end">
+          <div className="flex flex-1 items-center justify-end space-x-4">
             {comparison && (
-              <button onClick={handleReset} className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
-                <FileUp className="h-4 w-4 mr-2" />
-                Compare New Documents
-              </button>
+               <>
+                <button onClick={handleReset} className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
+                    <FileUp className="h-4 w-4 mr-2" />
+                    Compare New
+                </button>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline">
+                            <Download className="mr-2 h-4 w-4" /> Export
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem onSelect={() => handleExport('pdf')}>Export as PDF</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => handleExport('docx')}>Export as DOCX</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => handleExport('print')}>Print</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+               </>
             )}
           </div>
         </div>
@@ -193,7 +218,7 @@ export default function ComparePage() {
                 <h2 className="text-3xl font-bold tracking-tight">Comparison Report</h2>
                 <p className="mt-2 text-lg text-muted-foreground">Here is the side-by-side analysis of your documents.</p>
               </div>
-               <div className="p-8 rounded-lg border bg-card text-card-foreground shadow-sm">
+               <div ref={reportRef} id="report" className="p-8 rounded-lg border bg-card text-card-foreground shadow-sm">
                 <MarkdownReport content={comparison.comparison} />
               </div>
             </div>
