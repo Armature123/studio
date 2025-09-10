@@ -13,7 +13,11 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Link from "next/link";
 import { LegalChatbotWidget } from "@/components/lexiguide/legal-chatbot-widget";
 
-export default function Home({ setDocumentDataUri }: { setDocumentDataUri: (uri: string | null) => void }) {
+interface HomeProps {
+  setDocumentDataUri?: (uri: string | null) => void;
+}
+
+export default function Home({ setDocumentDataUri }: HomeProps) {
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +33,7 @@ export default function Home({ setDocumentDataUri }: { setDocumentDataUri: (uri:
   const handleAnalyze = async (formData: FormData) => {
     setIsLoading(true);
     setError(null);
-    setDocumentDataUri(null);
+    setDocumentDataUri?.(null);
     
     const file = formData.get('document') as File;
     if (!file) {
@@ -40,7 +44,7 @@ export default function Home({ setDocumentDataUri }: { setDocumentDataUri: (uri:
 
     try {
       const dataUri = await fileToDataURI(file);
-      setDocumentDataUri(dataUri);
+      setDocumentDataUri?.(dataUri);
 
       const result = await analyzeDocument(formData);
       if (result.error) {
@@ -64,7 +68,7 @@ export default function Home({ setDocumentDataUri }: { setDocumentDataUri: (uri:
     setAnalysis(null);
     setError(null);
     setIsLoading(false);
-    setDocumentDataUri(null);
+    setDocumentDataUri?.(null);
   }
 
   return (

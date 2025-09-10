@@ -17,9 +17,15 @@ export default function RootLayout({
 }>) {
   const [documentDataUri, setDocumentDataUri] = useState<string | null>(null);
   
+  // This function will be passed down to the page components.
+  const handleSetDocumentDataUri = (uri: string | null) => {
+    setDocumentDataUri(uri);
+  };
+
   const childrenWithProps = React.Children.map(children, child => {
     if (React.isValidElement(child)) {
-      return React.cloneElement(child as React.ReactElement<any>, { setDocumentDataUri });
+      // Ensure the prop is passed correctly.
+      return React.cloneElement(child as React.ReactElement<any>, { setDocumentDataUri: handleSetDocumentDataUri });
     }
     return child;
   });
