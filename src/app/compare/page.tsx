@@ -26,7 +26,8 @@ function MarkdownReport({ content }: { content: string }) {
   const renderHTML = (text: string) => {
     const cleanText = text
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em>$1</em>');
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/\n/g, '<br />'); // Ensure line breaks are handled
     return { __html: cleanText };
   };
 
@@ -35,29 +36,29 @@ function MarkdownReport({ content }: { content: string }) {
       {sections.map((section, index) => {
         const titleEnd = section.indexOf('\n');
         const title = section.substring(0, titleEnd).trim();
-        const body = section.substring(titleEnd).trim();
+        let body = section.substring(titleEnd).trim();
 
         if (title.toLowerCase() === 'comparison') {
           const { header, body: tableBody } = parseTable(body);
           return (
-            <div key={index} className="prose prose-sm max-w-none">
+            <div key={index}>
               <h3 className="font-semibold text-xl mb-4">{title}</h3>
               <div className="overflow-x-auto rounded-lg border">
-                <table className="min-w-full divide-y divide-border">
-                  <thead className="bg-muted/50">
+                <table className="min-w-full">
+                  <thead>
                     <tr>
                       {header.map((h, i) => (
-                        <th key={i} className={`py-3 px-4 text-left text-xs font-medium uppercase tracking-wider ${i === 1 ? 'bg-blue-50/50' : ''} ${i === 2 ? 'bg-purple-50/50' : ''}`}
+                        <th key={i} className="py-3 px-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider border-b"
                            dangerouslySetInnerHTML={renderHTML(h)}>
                         </th>
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="bg-card divide-y divide-border">
+                  <tbody>
                     {tableBody.map((row, rIndex) => (
-                      <tr key={rIndex}>
+                      <tr key={rIndex} className="border-b last:border-b-0">
                         {row.map((cell, cIndex) => (
-                          <td key={cIndex} className={`py-4 px-4 text-sm align-top ${cIndex === 1 ? 'bg-blue-50/5' : ''} ${cIndex === 2 ? 'bg-purple-50/5' : ''}`}
+                          <td key={cIndex} className="py-4 px-4 text-sm align-top"
                               dangerouslySetInnerHTML={renderHTML(cell)}>
                           </td>
                         ))}
@@ -71,14 +72,17 @@ function MarkdownReport({ content }: { content: string }) {
         }
         
         if (title.toLowerCase() === 'key differences' || title.toLowerCase() === 'summary') {
+            // Remove the initial bullet point if it exists at the start of the string
+            if(body.startsWith('* ')) {
+                body = body.substring(2);
+            }
             const htmlBody = body
               .replace(/\n\*/g, '<br/>&bull;') // Handle bullet points
               .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Handle bold
-              .replace(/\*/g, '') // Remove stray asterisks for bullets
               .replace(/\n/g, '<br />');
 
             return (
-              <div key={index} className="prose prose-sm max-w-none">
+              <div key={index}>
                 <h3 className="font-semibold text-xl mb-2">{title}</h3>
                 <div className="text-foreground/80" dangerouslySetInnerHTML={{ __html: htmlBody }} />
               </div>
@@ -87,7 +91,7 @@ function MarkdownReport({ content }: { content: string }) {
 
         // Default handler for disclaimer or any other section
         return (
-          <div key={index} className="prose prose-sm max-w-none">
+          <div key={index}>
              <div className="text-xs text-muted-foreground pt-4 border-t" dangerouslySetInnerHTML={{ __html: body.replace(/\n/g, '<br />') }} />
           </div>
         );
