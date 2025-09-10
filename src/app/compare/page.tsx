@@ -12,63 +12,56 @@ import type { CompareDocumentsOutput } from "@/ai/flows/compare-documents";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-// A simple markdown parser to display the report
+// A component to render the markdown report
 function MarkdownReport({ content }: { content: string }) {
-  const sections = content.split('### ').slice(1);
+  const sections = content.split('### ').filter(s => s.trim() !== '');
 
-  const parseTable = (tableString: string) => {
-    if (!tableString) return { header: [], body: [] };
-    const rows = tableString.trim().split('\n').filter(r => r.trim());
-    if (rows.length < 3) return { header: [], body: [] }; // Header, separator, and at least one body row
-
-    const header = rows[0].split('|').map(h => h.trim()).slice(1, -1);
-    const body = rows.slice(2).map(row => row.split('|').map(c => c.trim()).slice(1, -1));
-    return { header, body };
+  const parseSection = (sectionText: string) => {
+    const firstNewline = sectionText.indexOf('\n');
+    const title = sectionText.substring(0, firstNewline).trim();
+    const body = sectionText.substring(firstNewline).trim();
+    return { title, body };
   };
-
+  
   const renderHTML = (text: string) => {
-    const cleanText = text
+    if (!text) return { __html: '' };
+    const html = text
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
       .replace(/^- /, '')
-      .replace(/\n/g, '<br />'); // Ensure line breaks are handled
-    return { __html: cleanText };
+      .replace(/\n/g, '<br />');
+    return { __html: html };
   };
 
   return (
     <div className="space-y-8">
-      {sections.map((section, index) => {
-        if (!section) return null;
-        const titleEnd = section.indexOf('\n');
-        const title = section.substring(0, titleEnd).trim();
-        let body = section.substring(titleEnd).trim();
-        
-        if (!title) return null;
+      {sections.map((sectionContent, index) => {
+        const { title, body } = parseSection(sectionContent);
 
         if (title.toLowerCase() === 'comparison') {
-          const { header, body: tableBody } = parseTable(body);
-          if (header.length === 0) return null; // Don't render an empty table
+          const rows = body.trim().split('\n').filter(r => r.includes('|'));
+          if (rows.length < 3) return null; // Header, separator, and at least one body row
+
+          const header = rows[0].split('|').slice(1, -1).map(h => h.trim());
+          const tableBody = rows.slice(2).map(row => row.split('|').slice(1, -1).map(c => c.trim()));
+
           return (
             <div key={index}>
-              <h3 className="font-semibold text-xl mb-4">{title}</h3>
+              <h3 className="text-xl font-semibold mb-4">{title}</h3>
               <div className="overflow-x-auto rounded-lg border">
-                <table className="min-w-full">
-                  <thead>
-                    <tr className="bg-muted/50">
+                <table className="min-w-full divide-y divide-border">
+                  <thead className="bg-muted/50">
+                    <tr>
                       {header.map((h, i) => (
-                        <th key={i} className="py-3 px-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider border-b"
-                           dangerouslySetInnerHTML={renderHTML(h)}>
-                        </th>
+                        <th key={i} scope="col" className="py-3.5 px-4 text-left text-sm font-semibold text-foreground" dangerouslySetInnerHTML={renderHTML(h)}></th>
                       ))}
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="divide-y divide-border bg-background">
                     {tableBody.map((row, rIndex) => (
-                      <tr key={rIndex} className="border-b last:border-b-0">
+                      <tr key={rIndex}>
                         {row.map((cell, cIndex) => (
-                          <td key={cIndex} className="py-4 px-4 text-sm align-top"
-                              dangerouslySetInnerHTML={renderHTML(cell)}>
-                          </td>
+                          <td key={cIndex} className="py-4 px-4 text-sm text-muted-foreground align-top" dangerouslySetInnerHTML={renderHTML(cell)}></td>
                         ))}
                       </tr>
                     ))}
@@ -78,34 +71,30 @@ function MarkdownReport({ content }: { content: string }) {
             </div>
           );
         }
-        
-        if (title.toLowerCase() === 'key differences' || title.toLowerCase() === 'summary') {
-            if(body.startsWith('* ')) {
-                body = body.substring(2);
-            }
-            const htmlBody = body
-              .split('\n* ')
-              .map(item => `<li>${item.trim()}</li>`)
-              .join('')
-              .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-              .replace(/\n/g, '<br />');
 
-            return (
-              <div key={index}>
-                <h3 className="font-semibold text-xl mb-2">{title}</h3>
-                <div className="text-foreground/80 space-y-2">
-                    <ul className="list-disc pl-5 space-y-2" dangerouslySetInnerHTML={{ __html: htmlBody }} />
-                </div>
-              </div>
-            );
+        if (title.toLowerCase() === 'key differences' || title.toLowerCase() === 'summary') {
+          const listItems = body.split('\n').map(item => item.trim().replace(/^\* /, '')).filter(Boolean);
+          return (
+            <div key={index}>
+              <h3 className="text-xl font-semibold mb-2">{title}</h3>
+              <ul className="list-disc space-y-2 pl-5 text-muted-foreground">
+                {listItems.map((item, itemIndex) => (
+                  <li key={itemIndex} dangerouslySetInnerHTML={renderHTML(item)}></li>
+                ))}
+              </ul>
+            </div>
+          );
         }
 
-        // Default handler for disclaimer or any other section
-        return (
-          <div key={index}>
-             <div className="text-xs text-muted-foreground pt-4 border-t" dangerouslySetInnerHTML={{ __html: body.replace(/\n/g, '<br />') }} />
-          </div>
-        );
+        // Handler for disclaimer
+        if (body.toLowerCase().startsWith('disclaimer:')) {
+           return (
+            <div key={index} className="text-xs text-muted-foreground pt-4 border-t" dangerouslySetInnerHTML={renderHTML(body)}>
+            </div>
+           )
+        }
+        
+        return null;
       })}
     </div>
   );
