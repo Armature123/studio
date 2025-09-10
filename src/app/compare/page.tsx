@@ -17,7 +17,10 @@ function MarkdownReport({ content }: { content: string }) {
   const sections = content.split('### ').slice(1);
 
   const parseTable = (tableString: string) => {
-    const rows = tableString.trim().split('\n');
+    if (!tableString) return { header: [], body: [] };
+    const rows = tableString.trim().split('\n').filter(r => r.trim());
+    if (rows.length < 3) return { header: [], body: [] }; // Header, separator, and at least one body row
+
     const header = rows[0].split('|').map(h => h.trim()).slice(1, -1);
     const body = rows.slice(2).map(row => row.split('|').map(c => c.trim()).slice(1, -1));
     return { header, body };
@@ -27,6 +30,7 @@ function MarkdownReport({ content }: { content: string }) {
     const cleanText = text
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/^- /, '')
       .replace(/\n/g, '<br />'); // Ensure line breaks are handled
     return { __html: cleanText };
   };
@@ -34,19 +38,23 @@ function MarkdownReport({ content }: { content: string }) {
   return (
     <div className="space-y-8">
       {sections.map((section, index) => {
+        if (!section) return null;
         const titleEnd = section.indexOf('\n');
         const title = section.substring(0, titleEnd).trim();
         let body = section.substring(titleEnd).trim();
+        
+        if (!title) return null;
 
         if (title.toLowerCase() === 'comparison') {
           const { header, body: tableBody } = parseTable(body);
+          if (header.length === 0) return null; // Don't render an empty table
           return (
             <div key={index}>
               <h3 className="font-semibold text-xl mb-4">{title}</h3>
               <div className="overflow-x-auto rounded-lg border">
                 <table className="min-w-full">
                   <thead>
-                    <tr>
+                    <tr className="bg-muted/50">
                       {header.map((h, i) => (
                         <th key={i} className="py-3 px-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider border-b"
                            dangerouslySetInnerHTML={renderHTML(h)}>
@@ -72,19 +80,22 @@ function MarkdownReport({ content }: { content: string }) {
         }
         
         if (title.toLowerCase() === 'key differences' || title.toLowerCase() === 'summary') {
-            // Remove the initial bullet point if it exists at the start of the string
             if(body.startsWith('* ')) {
                 body = body.substring(2);
             }
             const htmlBody = body
-              .replace(/\n\*/g, '<br/>&bull;') // Handle bullet points
-              .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Handle bold
+              .split('\n* ')
+              .map(item => `<li>${item.trim()}</li>`)
+              .join('')
+              .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
               .replace(/\n/g, '<br />');
 
             return (
               <div key={index}>
                 <h3 className="font-semibold text-xl mb-2">{title}</h3>
-                <div className="text-foreground/80" dangerouslySetInnerHTML={{ __html: htmlBody }} />
+                <div className="text-foreground/80 space-y-2">
+                    <ul className="list-disc pl-5 space-y-2" dangerouslySetInnerHTML={{ __html: htmlBody }} />
+                </div>
               </div>
             );
         }
