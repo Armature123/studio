@@ -19,13 +19,13 @@ const nextConfig: NextConfig = {
     ],
   },
   webpack: (config, { isServer }) => {
-    // This is to fix a build error for 'fs' module not found
-    // It happens when a client-side library imports a server-side module
     if (!isServer) {
-        config.resolve.fallback = {
-            ...config.resolve.fallback,
-            fs: false,
-        };
+      // This is to fix a build error for 'fs' module not found
+      // It happens when a client-side library imports a server-side module
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      };
     }
     return config;
   },
