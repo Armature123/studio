@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Landmark, FileUp, Scale, Download } from "lucide-react";
+import { Landmark, FileUp, Scale, Download, FileDown, FileText, Bot } from "lucide-react";
 import { compareDocumentsAction } from "@/app/actions";
 import { CompareDocumentsForm } from "@/components/lexiguide/compare-documents-form";
 import { AnalysisLoader } from "@/components/lexiguide/analysis-loader";
@@ -11,6 +11,14 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { CompareDocumentsOutput } from "@/ai/flows/compare-documents";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { exportToPdf, exportToDocx, saveToGoogleDocs } from '@/lib/export-utils';
+
 
 // A component to render the markdown report
 function MarkdownReport({ content }: { content: string }) {
@@ -127,6 +135,17 @@ export default function ComparePage() {
   const { toast } = useToast();
   const reportRef = useRef<HTMLDivElement>(null);
 
+  const handleExport = (exportFunction: (element: HTMLElement, toast: any) => void) => {
+    if (reportRef.current) {
+      exportFunction(reportRef.current, toast);
+    } else {
+      toast({
+        variant: 'destructive',
+        title: 'Export Failed',
+        description: 'Could not find the report content to export.',
+      });
+    }
+  };
 
   const handleCompare = async (formData: FormData) => {
     setIsLoading(true);
@@ -176,6 +195,28 @@ export default function ComparePage() {
                     <FileUp className="h-4 w-4 mr-2" />
                     Compare New
                 </button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button>
+                      <Download className="mr-2 h-4 w-4" />
+                      Export Report
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem onClick={() => handleExport(exportToPdf)}>
+                      <FileDown className="mr-2 h-4 w-4" />
+                      <span>Export as PDF</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleExport(exportToDocx)}>
+                      <FileText className="mr-2 h-4 w-4" />
+                      <span>Export as DOCX</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleExport(saveToGoogleDocs)}>
+                       <Bot className="mr-2 h-4 w-4" />
+                       <span>Save to Google Docs</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
                </>
             )}
           </div>

@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Landmark, FileUp } from "lucide-react";
 import type { AnalysisResult } from "@/lib/types";
 import { analyzeDocument } from "@/app/actions";
@@ -13,9 +13,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Link from "next/link";
 import { LegalChatbotWidget } from "@/components/lexiguide/legal-chatbot-widget";
 
-export default function Home() {
+export default function Home({ setDocumentDataUri }: { setDocumentDataUri: (uri: string | null) => void }) {
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
-  const [documentDataUri, setDocumentDataUri] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
@@ -30,6 +29,7 @@ export default function Home() {
   const handleAnalyze = async (formData: FormData) => {
     setIsLoading(true);
     setError(null);
+    setDocumentDataUri(null);
     
     const file = formData.get('document') as File;
     if (!file) {
@@ -113,7 +113,6 @@ export default function Home() {
             </p>
         </div>
       </footer>
-      {analysis && documentDataUri && <LegalChatbotWidget documentDataUri={documentDataUri} />}
     </div>
   );
 }
