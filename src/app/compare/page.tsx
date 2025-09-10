@@ -25,9 +25,9 @@ function MarkdownReport({ content }: { content: string }) {
   
   const renderHTML = (text: string) => {
     if (!text) return { __html: '' };
+    // Process markdown-style bolding and convert newlines to <br>
     const html = text
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em>$1</em>')
       .replace(/^- /, '')
       .replace(/\n/g, '<br />');
     return { __html: html };
@@ -38,7 +38,7 @@ function MarkdownReport({ content }: { content: string }) {
       {sections.map((sectionContent, index) => {
         const { title, body } = parseSection(sectionContent);
 
-        if (title.toLowerCase() === 'comparison') {
+        if (title.toLowerCase().startsWith('comparison')) {
           const rows = body.trim().split('\n').filter(r => r.includes('|'));
           if (rows.length < 3) return null; // Header, separator, and at least one body row
 
@@ -72,16 +72,17 @@ function MarkdownReport({ content }: { content: string }) {
           );
         }
 
-        if (title.toLowerCase() === 'key differences' || title.toLowerCase() === 'summary') {
+        if (title.toLowerCase().startsWith('key differences') || title.toLowerCase().startsWith('summary')) {
           const listItems = body.split('\n').map(item => item.trim().replace(/^\* /, '')).filter(Boolean);
           return (
             <div key={index}>
               <h3 className="text-xl font-semibold mb-2">{title}</h3>
-              <ul className="list-disc space-y-2 pl-5 text-muted-foreground">
+              <div className="text-muted-foreground space-y-2">
                 {listItems.map((item, itemIndex) => (
-                  <li key={itemIndex} dangerouslySetInnerHTML={renderHTML(item)}></li>
+                    // Using a div instead of ul/li to better handle the <br> from renderHTML
+                    <div key={itemIndex} dangerouslySetInnerHTML={renderHTML(`• ${item}`)}></div>
                 ))}
-              </ul>
+              </div>
             </div>
           );
         }
@@ -198,3 +199,5 @@ export default function ComparePage() {
     </div>
   );
 }
+
+    
