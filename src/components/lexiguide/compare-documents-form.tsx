@@ -2,12 +2,16 @@
 "use client";
 
 import { useState, useRef, ChangeEvent } from "react";
-import { Files, FileText, X, GitCompareArrows, Sparkles } from "lucide-react";
+import { Files, FileText, X, GitCompareArrows, Sparkles, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
+import Link from "next/link";
 
 interface FileUploadAreaProps {
   file: File | null;
@@ -72,7 +76,7 @@ const FileUploadArea = ({ file, onFileChange, title, id }: FileUploadAreaProps) 
       {!file ? (
         <label
           htmlFor={id}
-          className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-background hover:bg-muted transition-colors ${isDragging ? 'border-primary' : 'border-border'}`}
+          className={`flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-background hover:bg-muted transition-colors ${isDragging ? 'border-primary' : 'border-border'}`}
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}
           onDragOver={handleDragOver}
@@ -86,7 +90,7 @@ const FileUploadArea = ({ file, onFileChange, title, id }: FileUploadAreaProps) 
           </div>
         </label>
       ) : (
-         <div className="flex items-center justify-between w-full h-32 px-4 border rounded-lg bg-muted/50">
+         <div className="flex items-center justify-between w-full h-48 px-4 border rounded-lg bg-muted/50">
           <div className="flex items-center gap-3 overflow-hidden">
             <FileText className="h-8 w-8 text-primary flex-shrink-0" />
             <div className="overflow-hidden">
@@ -112,6 +116,8 @@ export function CompareDocumentsForm({ onCompare }: CompareDocumentsFormProps) {
   const [fileA, setFileA] = useState<File | null>(null);
   const [fileB, setFileB] = useState<File | null>(null);
   const [instructions, setInstructions] = useState("");
+  const [retention, setRetention] = useState("7d");
+  const [consent, setConsent] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -156,8 +162,44 @@ export function CompareDocumentsForm({ onCompare }: CompareDocumentsFormProps) {
               onChange={(e) => setInstructions(e.target.value)}
             />
           </div>
+          
+          <Separator />
+          
+           <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <ShieldCheck className="h-6 w-6 mt-1 text-green-600"/>
+                <div>
+                    <h4 className="font-medium text-primary">Data &amp; Privacy</h4>
+                    <p className="text-sm text-muted-foreground">Your document is processed securely and is not used to train our models. It will be automatically deleted after the selected retention period.</p>
+                </div>
+              </div>
 
-          <Button type="submit" className="w-full" size="lg" disabled={!fileA || !fileB}>
+              <div className="space-y-2">
+                  <Label htmlFor="retention">Data Retention Period</Label>
+                  <Select value={retention} onValueChange={setRetention}>
+                      <SelectTrigger id="retention" className="w-full">
+                          <SelectValue placeholder="Select retention period" />
+                      </SelectTrigger>
+                      <SelectContent>
+                          <SelectItem value="24h">24 Hours</SelectItem>
+                          <SelectItem value="7d">7 Days (Default)</SelectItem>
+                          <SelectItem value="30d">30 Days</SelectItem>
+                      </SelectContent>
+                  </Select>
+              </div>
+
+              <div className="flex items-start space-x-3">
+                  <Checkbox id="consent" checked={consent} onCheckedChange={(checked) => setConsent(checked as boolean)} className="mt-1" />
+                  <div className="grid gap-1.5 leading-none">
+                      <Label htmlFor="consent" className="font-normal">
+                          I acknowledge that this tool provides guidance and not legal advice. I agree to the <Link href="#" className="underline text-primary">Terms of Service</Link>.
+                      </Label>
+                  </div>
+              </div>
+          </div>
+
+
+          <Button type="submit" className="w-full" size="lg" disabled={!fileA || !fileB || !consent}>
             Compare Documents
           </Button>
         </form>
