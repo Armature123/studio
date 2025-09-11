@@ -2,54 +2,52 @@
 "use client";
 
 import React, { useState } from "react";
-import { Landmark, FileUp } from "lucide-react";
-import type { AnalysisResult } from "@/lib/types";
-import { analyzeDocument } from "@/app/actions";
-import { FileUploadForm } from "@/components/lexiguide/file-upload-form";
-import { Dashboard } from "@/components/lexiguide/dashboard";
-import { AnalysisLoader } from "@/components/lexiguide/analysis-loader";
-import { useToast } from "@/hooks/use-toast";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Landmark } from "lucide-react";
 import Link from "next/link";
 
-export default function Home() {
-  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useToast } from "@/hooks/use-toast";
+import { compareDocumentsAction } from "@/app/actions";
+import { CompareDocumentsForm } from "@/components/lexiguide/compare-documents-form";
+import { AnalysisLoader } from "@/components/lexiguide/analysis-loader";
+import { ComparisonDashboard } from "@/components/lexiguide/comparison-dashboard";
+import type { CompareDocumentsOutput } from "@/lib/comparison-types";
+
+type ComparisonResult = CompareDocumentsOutput & { docNames: [string, string] };
+
+export default function ComparePage() {
+  const [comparison, setComparison] = useState<ComparisonResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const handleAnalyze = async (formData: FormData) => {
+  const handleCompare = async (formData: FormData) => {
     setIsLoading(true);
     setError(null);
+    setComparison(null);
     
-    const file = formData.get('document') as File;
-    if (!file) {
-      setError("No file provided");
-      setIsLoading(false);
-      return;
-    }
-
     try {
-      const result = await analyzeDocument(formData);
+      const result = await compareDocumentsAction(formData);
       if (result.error) {
         throw new Error(result.error);
       }
-      setAnalysis(result as AnalysisResult);
+      setComparison(result as ComparisonResult);
     } catch (e: any) {
-      setError(e.message || "An unexpected error occurred.");
+      const errorMessage = e.message || "An unexpected error occurred during comparison.";
+      setError(errorMessage);
       toast({
         variant: "destructive",
-        title: "Analysis Failed",
-        description: e.message || "Could not analyze the document. Please try again.",
+        title: "Comparison Failed",
+        description: errorMessage,
       });
-      setAnalysis(null);
+      setComparison(null);
     } finally {
       setIsLoading(false);
     }
   };
   
   const handleReset = () => {
-    setAnalysis(null);
+    setComparison(null);
     setError(null);
     setIsLoading(false);
   }
@@ -63,34 +61,26 @@ export default function Home() {
             <h1 className="text-lg font-semibold">LexiGuide</h1>
           </Link>
            <nav className="flex items-center space-x-6 text-sm font-medium">
-             <Link href="/" className="text-foreground">Analyze</Link>
-             <Link href="/compare" className="text-muted-foreground hover:text-foreground">Compare</Link>
+             <Link href="/" className="text-muted-foreground hover:text-foreground">Analyze</Link>
+             <Link href="/compare" className="text-foreground">Compare</Link>
           </nav>
-          <div className="flex flex-1 items-center justify-end">
-            {analysis && (
-              <button onClick={handleReset} className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
-                <FileUp className="h-4 w-4 mr-2" />
-                Analyze New Document
-              </button>
-            )}
-          </div>
         </div>
       </header>
       <main className="flex-1">
         <div className="container py-8">
           {isLoading && <AnalysisLoader />}
-          {!isLoading && !analysis && (
+          {!isLoading && !comparison && (
             <>
               {error && (
-                <Alert variant="destructive" className="mb-8">
+                <Alert variant="destructive" className="mb-8 max-w-4xl mx-auto">
                   <AlertTitle>Error</AlertTitle>
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
-              <FileUploadForm onAnalyze={handleAnalyze} />
+              <CompareDocumentsForm onCompare={handleCompare} />
             </>
           )}
-          {!isLoading && analysis && <Dashboard data={analysis} />}
+          {!isLoading && comparison && <ComparisonDashboard data={comparison} onReset={handleReset} />}
         </div>
       </main>
       <footer className="py-6 md:px-8 md:py-0 border-t">

@@ -5,7 +5,8 @@ import { extractLegalMetadata, ExtractLegalMetadataOutput } from "@/ai/flows/ext
 import { highlightRisks, HighlightRisksOutput } from "@/ai/flows/highlight-risks";
 import { detectLanguage } from "@/ai/flows/detect-language";
 import { extractActionItems, ExtractActionItemsOutput } from "@/ai/flows/extract-action-items";
-import { compareDocuments, CompareDocumentsOutput } from "@/ai/flows/compare-documents";
+import { compareDocuments } from "@/ai/flows/compare-documents";
+import { CompareDocumentsOutput } from "@/lib/comparison-types";
 
 async function fileToDataURI(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer();
@@ -64,4 +65,37 @@ export async function analyzeDocument(formData: FormData) {
     risks: risksResult,
     actionItems: actionItemsResult,
   };
+}
+
+export async function compareDocumentsAction(formData: FormData) {
+  const fileA = formData.get('documentA') as File;
+  const fileB = formData.get('documentB') as File;
+  const instructions = formData.get('instructions') as string || '';
+
+  if (!fileA || !fileB) {
+    return { error: 'Please provide both documents for comparison.' };
+  }
+
+  try {
+    const [dataUriA, dataUriB] = await Promise.all([
+      fileToDataURI(fileA),
+      fileToDataURI(fileB),
+    ]);
+    
+    const input = {
+      documentA: { documentDataUri: dataUriA, fileName: fileA.name },
+      documentB: { documentDataUri: dataUriB, fileName: fileB.name },
+      instructions,
+    };
+    
+    const result = await compareDocuments(input);
+    
+    return { ...result, docNames: [fileA.name, fileB.name] };
+
+  } catch (error: any) {
+    console.error("Error during document comparison action:", error);
+    return { 
+      error: `Comparison failed: ${error.message || 'An unknown error occurred.'}` 
+    };
+  }
 }
