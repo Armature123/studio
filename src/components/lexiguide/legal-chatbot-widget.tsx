@@ -11,7 +11,6 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { homeFacts } from "@/lib/home-facts";
 import { usePathname } from "next/navigation";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 type Message = {
   id: number;

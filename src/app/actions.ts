@@ -6,8 +6,8 @@ import { highlightRisks, HighlightRisksOutput } from "@/ai/flows/highlight-risks
 import { detectLanguage } from "@/ai/flows/detect-language";
 import { extractActionItems, ExtractActionItemsOutput } from "@/ai/flows/extract-action-items";
 import { compareDocuments } from "@/ai/flows/compare-documents";
-import { CompareDocumentsOutput } from "@/lib/comparison-types";
 import { askLegalQuestion, } from "@/ai/flows/legal-chat-flow";
+import type { CompareDocumentsOutput } from "@/lib/comparison-types";
 import type { LegalChatInput, LegalChatOutput } from "@/lib/chat-types";
 
 
@@ -91,7 +91,7 @@ export async function compareDocumentsAction(formData: FormData) {
       instructions,
     };
     
-    const result = await compareDocuments(input);
+    const result: CompareDocumentsOutput = await compareDocuments(input);
     
     const clauseCountA = Object.values(result.docA || {}).flat().length;
     const clauseCountB = Object.values(result.docB || {}).flat().length;
