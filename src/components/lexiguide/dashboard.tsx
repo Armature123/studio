@@ -64,14 +64,18 @@ export function Dashboard({ data }: DashboardProps) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div ref={reportRef} id="report" className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start bg-background p-4 sm:p-8 rounded-lg">
-        <div className="lg:col-span-2 space-y-8">
-          <RisksSection risks={data.risks.risks} />
+      <div ref={reportRef} id="report" className="space-y-8 bg-background p-4 sm:p-8 rounded-lg">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+            <div className="lg:col-span-3 space-y-8">
+                <RisksSection risks={data.risks.risks} />
+            </div>
+            <div className="lg:col-span-2 space-y-8">
+                <TasksSection tasks={data.actionItems} />
+            </div>
         </div>
-        <div className="lg:col-span-1 space-y-8">
-          <TasksSection tasks={data.actionItems} />
-          <MetadataSection metadata={data.metadata.metadata} />
-          <GlossarySection definitions={data.metadata.metadata.definitions} />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <MetadataSection metadata={data.metadata.metadata} />
+            <GlossarySection definitions={data.metadata.metadata.definitions} />
         </div>
       </div>
     </div>
