@@ -65,31 +65,3 @@ export async function analyzeDocument(formData: FormData) {
     actionItems: actionItemsResult,
   };
 }
-
-export async function compareDocumentsAction(formData: FormData): Promise<{ comparison?: CompareDocumentsOutput; error?: string }> {
-  const fileA = formData.get('documentA') as File;
-  const fileB = formData.get('documentB') as File;
-
-  if (!fileA || !fileB) {
-    return { error: 'Please provide both documents for comparison.' };
-  }
-  
-  try {
-    console.log(`Processing Document A: ${fileA.name} (${fileA.size} bytes)`);
-    console.log(`Processing Document B: ${fileB.name} (${fileB.size} bytes)`);
-
-    const [documentADataUri, documentBDataUri] = await Promise.all([
-      fileToDataURI(fileA),
-      fileToDataURI(fileB)
-    ]);
-    
-    const comparisonResult = await compareDocuments({ documentADataUri, documentBDataUri });
-    return { comparison: comparisonResult };
-
-  } catch (error: any) {
-    console.error("Error during document comparison:", error);
-    return { 
-      error: `Failed to compare documents: ${error.message}` 
-    };
-  }
-}

@@ -64,7 +64,6 @@ export default function Home() {
           </Link>
            <nav className="flex items-center space-x-6 text-sm font-medium">
              <Link href="/" className="text-foreground">Analyze</Link>
-             <Link href="/compare" className="text-muted-foreground transition-colors hover:text-foreground">Compare</Link>
           </nav>
           <div className="flex flex-1 items-center justify-end">
             {analysis && (
