@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Scale, Send, Bot, User, X } from "lucide-react";
+import { Bot, Send, User, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -31,10 +31,15 @@ export function LegalChatbotWidget() {
   const pathname = usePathname();
 
   useEffect(() => {
-    // This code runs only on the client, after the component has mounted.
-    // This is the safe place to access the `document` object.
-    setHasAnalysis(!!document.getElementById('report') || !!document.getElementById('comparison-report'));
-  }, [pathname, messages]); // Re-check when path or messages change
+    // This effect runs on the client after mount, safely accessing `document`.
+    const checkAnalysis = () => {
+      const hasReport = !!document.getElementById('report') || !!document.getElementById('comparison-report');
+      setHasAnalysis(hasReport);
+    };
+
+    checkAnalysis();
+    // Re-check when path or messages change as content might appear dynamically.
+  }, [pathname, messages]);
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -71,17 +76,16 @@ export function LegalChatbotWidget() {
 
     try {
       let pageContext: string | undefined;
-      const isContentAvailable = hasAnalysis;
 
-      if (isContentAvailable) {
+      if (hasAnalysis) {
         const pageContentElement = document.getElementById('page-content');
         pageContext = pageContentElement ? pageContentElement.innerText : undefined;
       }
       
       const result = await askLegalQuestionAction({
         query: userMessage.text,
-        context: isContentAvailable ? pageContext : undefined,
-        homeFacts: !isContentAvailable ? homeFacts : undefined,
+        context: hasAnalysis ? pageContext : undefined,
+        homeFacts: !hasAnalysis ? homeFacts : undefined,
       });
 
       const botMessage: Message = { id: Date.now(), sender: 'bot', text: result.reply };
@@ -109,7 +113,7 @@ export function LegalChatbotWidget() {
         size="icon"
         onClick={() => setIsOpen(true)}
       >
-        <Scale className="h-7 w-7" />
+        <Bot className="h-7 w-7" />
         <span className="sr-only">Open Legal Chat</span>
       </Button>
 
