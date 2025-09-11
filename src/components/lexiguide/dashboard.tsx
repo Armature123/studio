@@ -68,14 +68,12 @@ export function Dashboard({ data }: DashboardProps) {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
             <div className="lg:col-span-3 space-y-8">
                 <RisksSection risks={data.risks.risks} />
+                <MetadataSection metadata={data.metadata.metadata} />
             </div>
             <div className="lg:col-span-2 space-y-8">
                 <TasksSection tasks={data.actionItems} />
+                <GlossarySection definitions={data.metadata.metadata.definitions} />
             </div>
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-            <MetadataSection metadata={data.metadata.metadata} />
-            <GlossarySection definitions={data.metadata.metadata.definitions} />
         </div>
       </div>
     </div>
