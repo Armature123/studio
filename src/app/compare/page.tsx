@@ -11,9 +11,7 @@ import { compareDocumentsAction } from "@/app/actions";
 import { CompareDocumentsForm } from "@/components/lexiguide/compare-documents-form";
 import { AnalysisLoader } from "@/components/lexiguide/analysis-loader";
 import { ComparisonDashboard } from "@/components/lexiguide/comparison-dashboard";
-import type { CompareDocumentsOutput } from "@/lib/comparison-types";
-
-type ComparisonResult = CompareDocumentsOutput & { docNames: [string, string] };
+import type { ComparisonResult } from "@/lib/comparison-types";
 
 export default function ComparePage() {
   const [comparison, setComparison] = useState<ComparisonResult | null>(null);
@@ -73,7 +71,7 @@ export default function ComparePage() {
             <>
               {error && (
                 <Alert variant="destructive" className="mb-8 max-w-4xl mx-auto">
-                  <AlertTitle>Error</AlertTitle>
+                   <AlertTitle>{error === "🚫 Can’t parse this file—try plain text or PDF." ? "Parsing Error" : "Error"}</AlertTitle>
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}

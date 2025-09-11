@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useRef, ChangeEvent } from "react";
-import { Files, FileText, X, Scale, Sparkles } from "lucide-react";
+import { Files, FileText, X, GitCompareArrows, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -114,35 +114,34 @@ export function CompareDocumentsForm({ onCompare }: CompareDocumentsFormProps) {
     <Card className="max-w-4xl mx-auto bg-card">
       <CardHeader className="text-center">
         <div className="mx-auto bg-primary/10 text-primary rounded-full p-3 w-fit mb-4">
-          <Scale className="h-8 w-8 text-accent" />
+          <GitCompareArrows className="h-8 w-8 text-accent" />
         </div>
-        <CardTitle className="text-foreground">Compare Legal Documents</CardTitle>
-        <CardDescription>Upload two documents to identify differences, track changes, and ensure consistency.</CardDescription>
+        <CardTitle className="text-foreground">Compare Job Offers</CardTitle>
+        <CardDescription>Upload two job offers to see which one is more favorable.</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="flex flex-col sm:flex-row gap-6">
-            <FileUploadArea file={fileA} onFileChange={setFileA} title="Original Document (A)" id="file-a" />
-            <FileUploadArea file={fileB} onFileChange={setFileB} title="Revised Document (B)" id="file-b" />
+            <FileUploadArea file={fileA} onFileChange={setFileA} title="Offer A" id="file-a" />
+            <FileUploadArea file={fileB} onFileChange={setFileB} title="Offer B" id="file-b" />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="instructions" className="flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-amber-500" />
-              Optional Instructions
+              Optional: What's most important to you?
             </Label>
             <Textarea
               id="instructions"
-              placeholder="e.g., 'Focus on liability and termination clauses' or 'Ignore changes to party names'"
+              placeholder="e.g., 'Focus on the non-compete clause' or 'Compare remote work policies'"
               className="h-24"
               value={instructions}
               onChange={(e) => setInstructions(e.target.value)}
             />
-            <p className="text-xs text-muted-foreground">Guide the AI to focus on what matters most to you in the comparison.</p>
           </div>
 
           <Button type="submit" className="w-full" size="lg" disabled={!fileA || !fileB}>
-            Compare Documents
+            Compare Offers
           </Button>
         </form>
       </CardContent>

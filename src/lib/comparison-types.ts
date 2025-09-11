@@ -17,20 +17,24 @@ export const CompareDocumentsInputSchema = z.object({
     .string()
     .optional()
     .describe(
-      'Optional user instructions to guide the comparison, e.g., "Focus on liability clauses." or "Ignore formatting changes."'
+      'Optional user instructions to guide the comparison, e.g., "Focus on the non-compete clause."'
     ),
 });
 export type CompareDocumentsInput = z.infer<typeof CompareDocumentsInputSchema>;
 
-const DiffItemSchema = z.object({
-  type: z.enum(['added', 'removed', 'modified']),
-  content: z.string().describe('The textual content of the change.'),
-  originalContent: z.string().optional().describe('The original content, for modified items.'),
+
+export const ClauseCategorySchema = z.object({
+    Benefits: z.array(z.string()).describe("Salary, leave, perks, equity"),
+    Liabilities: z.array(z.string()).describe("Notice period, non-compete, bond"),
+    Levers: z.array(z.string()).describe("Clauses that can usually be negotiated"),
 });
+export type ClauseCategory = z.infer<typeof ClauseCategorySchema>;
 
 export const CompareDocumentsOutputSchema = z.object({
-    similarityScore: z.number().min(0).max(100).describe('An overall similarity score from 0 (completely different) to 100 (identical).'),
-    comparisonSummary: z.string().describe('A high-level, executive summary of the key differences between the two documents.'),
-    detailedDiff: z.array(DiffItemSchema).describe('A structured list of differences between the two documents.'),
+    docA: ClauseCategorySchema,
+    docB: ClauseCategorySchema,
 });
 export type CompareDocumentsOutput = z.infer<typeof CompareDocumentsOutputSchema>;
+
+
+export type ComparisonResult = CompareDocumentsOutput & { docNames: [string, string] };
