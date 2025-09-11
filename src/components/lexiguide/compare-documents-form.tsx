@@ -30,25 +30,37 @@ const FileUploadArea = ({ file, onFileChange, title, id }: FileUploadAreaProps) 
       onFileChange(selectedFile);
     }
   };
-  
-  const commonDragProps = {
-    onDragEnter: (e: React.DragEvent) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true); },
-    onDragLeave: (e: React.DragEvent) => { e.preventDefault(); e.stopPropagation(); setIsDragging(false); },
-    onDragOver: (e: React.DragEvent) => { e.preventDefault(); e.stopPropagation(); },
-    onDrop: (e: React.DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      setIsDragging(false);
-      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-        handleFileSelect(e.dataTransfer.files[0]);
-        e.dataTransfer.clearData();
-      }
-    },
+
+  const handleDragEnter = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
   };
 
+  const handleDragLeave = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+  
+  const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFileSelect(e.dataTransfer.files[0]);
+      e.dataTransfer.clearData();
+    }
+  };
+  
   return (
     <div className="flex-1 space-y-2">
-      <Label htmlFor={id}>{title}</Label>
+       <Label htmlFor={id} className="text-center w-full block">{title}</Label>
       <input
         type="file"
         id={id}
@@ -58,18 +70,23 @@ const FileUploadArea = ({ file, onFileChange, title, id }: FileUploadAreaProps) 
         accept=".pdf,.doc,.docx,.txt"
       />
       {!file ? (
-        <div
-          {...commonDragProps}
-          onClick={() => fileInputRef.current?.click()}
+        <label
+          htmlFor={id}
           className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-background hover:bg-muted transition-colors ${isDragging ? 'border-primary' : 'border-border'}`}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+          onClick={() => fileInputRef.current?.click()}
         >
           <div className="flex flex-col items-center justify-center text-center p-2">
             <Files className="w-8 h-8 mb-2 text-primary" />
-            <p className="text-xs text-muted-foreground"><span className="font-semibold text-primary">Click or drag</span> file</p>
+            <p className="text-sm text-muted-foreground"><span className="font-semibold text-primary">Click or drag</span> file</p>
+            <p className="text-xs text-muted-foreground">PDF, DOCX, or TXT</p>
           </div>
-        </div>
+        </label>
       ) : (
-        <div {...commonDragProps} className="flex items-center justify-between w-full h-24 px-4 border rounded-lg bg-muted/50">
+         <div className="flex items-center justify-between w-full h-32 px-4 border rounded-lg bg-muted/50">
           <div className="flex items-center gap-3 overflow-hidden">
             <FileText className="h-8 w-8 text-primary flex-shrink-0" />
             <div className="overflow-hidden">
