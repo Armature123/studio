@@ -11,26 +11,16 @@ import { AnalysisLoader } from "@/components/lexiguide/analysis-loader";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Link from "next/link";
-import { LegalChatbotWidget } from "@/components/lexiguide/legal-chatbot-widget";
 
 export default function Home() {
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
-  const [documentDataUri, setDocumentDataUri] = useState<string | null>(null);
-
-  async function fileToDataURI(file: File): Promise<string> {
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    const base64 = buffer.toString('base64');
-    return `data:${file.type};base64,${base64}`;
-  }
 
   const handleAnalyze = async (formData: FormData) => {
     setIsLoading(true);
     setError(null);
-    setDocumentDataUri(null);
     
     const file = formData.get('document') as File;
     if (!file) {
@@ -40,9 +30,6 @@ export default function Home() {
     }
 
     try {
-      const dataUri = await fileToDataURI(file);
-      setDocumentDataUri(dataUri);
-
       const result = await analyzeDocument(formData);
       if (result.error) {
         throw new Error(result.error);
@@ -65,7 +52,6 @@ export default function Home() {
     setAnalysis(null);
     setError(null);
     setIsLoading(false);
-    setDocumentDataUri(null);
   }
 
   return (
@@ -114,7 +100,6 @@ export default function Home() {
             </p>
         </div>
       </footer>
-      {analysis && <LegalChatbotWidget documentDataUri={documentDataUri} />}
     </div>
   );
 }
