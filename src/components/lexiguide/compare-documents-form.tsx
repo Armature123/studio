@@ -140,7 +140,7 @@ export function CompareDocumentsForm({ onCompare }: CompareDocumentsFormProps) {
           <GitCompareArrows className="h-8 w-8 text-accent" />
         </div>
         <CardTitle className="text-foreground">Compare Legal Documents</CardTitle>
-        <CardDescription>Upload any two documents (e.g., lease, NDA, contract) to see a side-by-side clause comparison.</CardDescription>
+        <CardDescription>Upload two documents to see a side-by-side clause comparison.</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -149,20 +149,6 @@ export function CompareDocumentsForm({ onCompare }: CompareDocumentsFormProps) {
             <FileUploadArea file={fileB} onFileChange={setFileB} title="Document B" id="file-b" />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="instructions" className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-amber-500" />
-              Optional: Special instructions for the AI?
-            </Label>
-            <Textarea
-              id="instructions"
-              placeholder="e.g., 'Focus on intellectual property clauses' or 'Pay special attention to liability caps'"
-              className="h-24"
-              value={instructions}
-              onChange={(e) => setInstructions(e.target.value)}
-            />
-          </div>
-          
           <Separator />
           
            <div className="space-y-4">
@@ -196,6 +182,22 @@ export function CompareDocumentsForm({ onCompare }: CompareDocumentsFormProps) {
                       </Label>
                   </div>
               </div>
+          </div>
+          
+          <Separator />
+
+          <div className="space-y-2">
+            <Label htmlFor="instructions" className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-amber-500" />
+              Optional: Special instructions for the AI?
+            </Label>
+            <Textarea
+              id="instructions"
+              placeholder="e.g., 'Focus on intellectual property clauses' or 'Pay special attention to liability caps'"
+              className="h-24"
+              value={instructions}
+              onChange={(e) => setInstructions(e.target.value)}
+            />
           </div>
 
 

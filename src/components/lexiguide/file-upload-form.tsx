@@ -98,7 +98,7 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
           <FileUp className="h-8 w-8 text-accent" />
         </div>
         <CardTitle className="text-foreground">Analyze Your Legal Document</CardTitle>
-        <CardDescription>Upload a document or paste text to get AI-powered insights, summaries, and risk assessments.</CardDescription>
+        <CardDescription>Get AI-powered insights, summaries, and risk assessments.</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -163,24 +163,6 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
               </TabsContent>
             </div>
           </Tabs>
-
-          <div className="space-y-2">
-            <Label htmlFor="language">Summary Language</Label>
-            <Select value={language} onValueChange={setLanguage}>
-                <SelectTrigger id="language" className="w-full">
-                    <SelectValue placeholder="Select language" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="English">English</SelectItem>
-                    <SelectItem value="Kannada">Kannada</SelectItem>
-                    <SelectItem value="Hindi">Hindi</SelectItem>
-                    <SelectItem value="Tamil">Tamil</SelectItem>
-                    <SelectItem value="Spanish">Spanish</SelectItem>
-                    <SelectItem value="French">French</SelectItem>
-                    <SelectItem value="German">German</SelectItem>
-                </SelectContent>
-            </Select>
-          </div>
           
           <Separator />
 
@@ -215,6 +197,26 @@ export function FileUploadForm({ onAnalyze }: FileUploadFormProps) {
                       </Label>
                   </div>
               </div>
+          </div>
+
+          <Separator />
+          
+          <div className="space-y-2">
+            <Label htmlFor="language">Summary Language</Label>
+            <Select value={language} onValueChange={setLanguage}>
+                <SelectTrigger id="language" className="w-full">
+                    <SelectValue placeholder="Select language" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="English">English</SelectItem>
+                    <SelectItem value="Kannada">Kannada</SelectItem>
+                    <SelectItem value="Hindi">Hindi</SelectItem>
+                    <SelectItem value="Tamil">Tamil</SelectItem>
+                    <SelectItem value="Spanish">Spanish</SelectItem>
+                    <SelectItem value="French">French</SelectItem>
+                    <SelectItem value="German">German</SelectItem>
+                </SelectContent>
+            </Select>
           </div>
 
 

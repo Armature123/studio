@@ -117,11 +117,10 @@ export function LegalChatbotWidget() {
   return (
     <>
       <Button
-        className="fixed bottom-4 right-4 md:bottom-6 md:right-6 h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 z-50"
-        size="icon"
+        className="fixed bottom-4 right-4 md:bottom-6 md:right-6 h-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 z-50 pl-4 pr-5"
         onClick={() => setIsOpen(!isOpen)}
       >
-        {isOpen ? <X className="h-7 w-7" /> : <Bot className="h-7 w-7" />}
+        {isOpen ? <X className="h-7 w-7" /> : <><Bot className="h-7 w-7 mr-2" /> <span>Ask LexiBot</span></>}
         <span className="sr-only">{isOpen ? "Close Chat" : "Open Legal Chat"}</span>
       </Button>
 

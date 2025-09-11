@@ -102,54 +102,42 @@ export function ComparisonDashboard({ data, onReset }: ComparisonDashboardProps)
         </div>
       
         <div ref={reportRef} id="report" className="bg-white/60 backdrop-blur-xl rounded-2xl shadow-lg p-4 sm:p-6">
-            <div className="mb-6 px-2">
-                <div className="flex flex-col sm:flex-row gap-4">
-                     <Badge variant="outline" className="flex-1 justify-center py-2 text-sm truncate bg-white">
-                        <FileText className="h-4 w-4 mr-2" />
-                        <span className="font-semibold mr-2">Doc A:</span>
-                        <span className="text-muted-foreground truncate">{docNames[0]}</span>
-                    </Badge>
-                    <Badge variant="outline" className="flex-1 justify-center py-2 text-sm truncate bg-white">
-                        <FileText className="h-4 w-4 mr-2" />
-                        <span className="font-semibold mr-2">Doc B:</span>
-                        <span className="text-muted-foreground truncate">{docNames[1]}</span>
-                    </Badge>
-                </div>
+             <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse" style={{ tableLayout: 'fixed' }}>
+                    <thead>
+                        <tr>
+                            <th className="p-4 border-b font-semibold w-1/4">Clause Category</th>
+                            <th className="p-4 border-b font-semibold w-3/8">
+                                <Badge variant="outline" className="justify-start w-full py-2 text-sm truncate bg-white">
+                                    <FileText className="h-4 w-4 mr-2" />
+                                    <span className="text-muted-foreground truncate">{docNames[0]}</span>
+                                </Badge>
+                            </th>
+                            <th className="p-4 border-b font-semibold w-3/8">
+                                <Badge variant="outline" className="justify-start w-full py-2 text-sm truncate bg-white">
+                                    <FileText className="h-4 w-4 mr-2" />
+                                    <span className="text-muted-foreground truncate">{docNames[1]}</span>
+                                </Badge>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {allCategories.map(categoryKey => (
+                            <tr key={categoryKey} className="group">
+                                <td className="p-4 border-b align-top font-medium text-foreground group-hover:bg-slate-50/80">
+                                    {CATEGORY_CONFIG[categoryKey].title}
+                                </td>
+                                <td className="p-4 border-b align-top group-hover:bg-slate-50/80">
+                                    <ClauseCell clauses={docA[categoryKey]} />
+                                </td>
+                                <td className="p-4 border-b align-top group-hover:bg-slate-50/80">
+                                    <ClauseCell clauses={docB[categoryKey]} />
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
-
-            <Card className="overflow-x-auto bg-transparent border-0 shadow-none">
-                <CardHeader className="p-2">
-                    <CardTitle className="text-xl">Comparison Matrix</CardTitle>
-                </CardHeader>
-                <CardContent className="p-0">
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse" style={{ tableLayout: 'fixed' }}>
-                            <thead className="sticky top-0 bg-white/80 backdrop-blur-md z-10">
-                                <tr>
-                                    <th className="p-4 border-b font-semibold w-1/4">Clause Category</th>
-                                    <th className="p-4 border-b font-semibold w-3/8">Doc A</th>
-                                    <th className="p-4 border-b font-semibold w-3/8">Doc B</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {allCategories.map(categoryKey => (
-                                    <tr key={categoryKey} className="group">
-                                        <td className="p-4 border-b align-top font-medium text-foreground group-hover:bg-slate-50/80">
-                                            {CATEGORY_CONFIG[categoryKey].title}
-                                        </td>
-                                        <td className="p-4 border-b align-top group-hover:bg-slate-50/80">
-                                            <ClauseCell clauses={docA[categoryKey]} />
-                                        </td>
-                                        <td className="p-4 border-b align-top group-hover:bg-slate-50/80">
-                                            <ClauseCell clauses={docB[categoryKey]} />
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </CardContent>
-            </Card>
         </div>
     </div>
   );
