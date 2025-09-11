@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useRef } from 'react';
-import { Download, FileUp, FileText, CheckCircle2, XCircle } from 'lucide-react';
+import { Download, FileUp, FileText, CheckCircle2, XCircle, Landmark, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { exportToPdf } from '@/lib/export-utils';

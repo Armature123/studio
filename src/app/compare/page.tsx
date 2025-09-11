@@ -29,10 +29,6 @@ export default function ComparePage() {
       if (result.error) {
         throw new Error(result.error);
       }
-      const clauseCount = Object.values(result.docA || {}).flat().length + Object.values(result.docB || {}).flat().length;
-      if (clauseCount < 2) {
-        throw new Error("🚫 Could not find legal clauses—check file is text/PDF and not scanned image.");
-      }
       setComparison(result as ComparisonResult);
     } catch (e: any) {
       const errorMessage = e.message || "An unexpected error occurred during comparison.";
@@ -55,7 +51,7 @@ export default function ComparePage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen bg-background" id="page-content">
       <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center">
            <Link href="/" className="mr-6 flex items-center">

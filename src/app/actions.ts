@@ -7,6 +7,9 @@ import { detectLanguage } from "@/ai/flows/detect-language";
 import { extractActionItems, ExtractActionItemsOutput } from "@/ai/flows/extract-action-items";
 import { compareDocuments } from "@/ai/flows/compare-documents";
 import { CompareDocumentsOutput } from "@/lib/comparison-types";
+import { askLegalQuestion, } from "@/ai/flows/legal-chat-flow";
+import type { LegalChatInput, LegalChatOutput } from "@/lib/chat-types";
+
 
 async function fileToDataURI(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer();
@@ -90,12 +93,31 @@ export async function compareDocumentsAction(formData: FormData) {
     
     const result = await compareDocuments(input);
     
+    const clauseCountA = Object.values(result.docA || {}).flat().length;
+    const clauseCountB = Object.values(result.docB || {}).flat().length;
+    if (clauseCountA < 2 && clauseCountB < 2) {
+      return { error: "🚫 Could not find legal clauses—check file is text/PDF and not scanned image." };
+    }
+
     return { ...result, docNames: [fileA.name, fileB.name] };
 
   } catch (error: any) {
     console.error("Error during document comparison action:", error);
     return { 
       error: `Comparison failed: ${error.message || 'An unknown error occurred.'}` 
+    };
+  }
+}
+
+export async function askLegalQuestionAction(input: LegalChatInput): Promise<LegalChatOutput> {
+  try {
+    const result = await askLegalQuestion(input);
+    return result;
+  } catch (error: any) {
+    console.error("Error in legal chat action:", error);
+    // Return a structured error that the client can handle
+    return {
+      reply: "Sorry, I encountered an error. Please try again.",
     };
   }
 }
