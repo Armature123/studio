@@ -37,9 +37,15 @@ export function LegalChatbotWidget() {
       setHasAnalysis(hasReport);
     };
 
+    // Run on mount and whenever the path changes
     checkAnalysis();
-    // Re-check when path or messages change as content might appear dynamically.
-  }, [pathname, messages]);
+    
+    // We can also use a MutationObserver to detect when the report is added to the DOM
+    const observer = new MutationObserver(checkAnalysis);
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => observer.disconnect();
+  }, [pathname]);
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -76,16 +82,16 @@ export function LegalChatbotWidget() {
 
     try {
       let pageContext: string | undefined;
-
-      if (hasAnalysis) {
-        const pageContentElement = document.getElementById('page-content');
-        pageContext = pageContentElement ? pageContentElement.innerText : undefined;
+      const pageContentElement = document.getElementById('page-content');
+      
+      if (pageContentElement && hasAnalysis) {
+        pageContext = pageContentElement.innerText;
       }
       
       const result = await askLegalQuestionAction({
         query: userMessage.text,
-        context: hasAnalysis ? pageContext : undefined,
-        homeFacts: !hasAnalysis ? homeFacts : undefined,
+        context: pageContext,
+        homeFacts: !pageContext ? homeFacts : undefined,
       });
 
       const botMessage: Message = { id: Date.now(), sender: 'bot', text: result.reply };
@@ -109,7 +115,7 @@ export function LegalChatbotWidget() {
   return (
     <>
       <Button
-        className="fixed bottom-4 right-4 md:bottom-6 md:right-6 h-14 w-14 rounded-full bg-slate-900 text-white shadow-lg hover:bg-slate-800 z-50"
+        className="fixed bottom-4 right-4 md:bottom-6 md:right-6 h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 z-50"
         size="icon"
         onClick={() => setIsOpen(true)}
       >
