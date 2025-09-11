@@ -24,9 +24,11 @@ export type CompareDocumentsInput = z.infer<typeof CompareDocumentsInputSchema>;
 
 
 export const ClauseCategorySchema = z.object({
-    Benefits: z.array(z.string()).describe("Salary, leave, perks, equity"),
-    Liabilities: z.array(z.string()).describe("Notice period, non-compete, bond"),
-    Levers: z.array(z.string()).describe("Clauses that can usually be negotiated"),
+    Obligations: z.array(z.string()).describe("Duties each party must do."),
+    Rights: z.array(z.string()).describe("What each party is entitled to."),
+    Risks_Liabilities: z.array(z.string()).describe("Who pays, indemnifies, or is liable."),
+    Term_Termination: z.array(z.string()).describe("Length, exit, notice, renewal."),
+    Levers: z.array(z.string()).describe("Clauses commonly red-lined (caps, governing law, venue, IP, non-compete, etc.)."),
 });
 export type ClauseCategory = z.infer<typeof ClauseCategorySchema>;
 

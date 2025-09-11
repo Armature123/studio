@@ -116,24 +116,24 @@ export function CompareDocumentsForm({ onCompare }: CompareDocumentsFormProps) {
         <div className="mx-auto bg-primary/10 text-primary rounded-full p-3 w-fit mb-4">
           <GitCompareArrows className="h-8 w-8 text-accent" />
         </div>
-        <CardTitle className="text-foreground">Compare Job Offers</CardTitle>
-        <CardDescription>Upload two job offers to see which one is more favorable.</CardDescription>
+        <CardTitle className="text-foreground">Compare Legal Documents</CardTitle>
+        <CardDescription>Upload any two documents (e.g., lease, NDA, contract) to see a side-by-side clause comparison.</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="flex flex-col sm:flex-row gap-6">
-            <FileUploadArea file={fileA} onFileChange={setFileA} title="Offer A" id="file-a" />
-            <FileUploadArea file={fileB} onFileChange={setFileB} title="Offer B" id="file-b" />
+            <FileUploadArea file={fileA} onFileChange={setFileA} title="Document A" id="file-a" />
+            <FileUploadArea file={fileB} onFileChange={setFileB} title="Document B" id="file-b" />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="instructions" className="flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-amber-500" />
-              Optional: What's most important to you?
+              Optional: Special instructions for the AI?
             </Label>
             <Textarea
               id="instructions"
-              placeholder="e.g., 'Focus on the non-compete clause' or 'Compare remote work policies'"
+              placeholder="e.g., 'Focus on intellectual property clauses' or 'Pay special attention to liability caps'"
               className="h-24"
               value={instructions}
               onChange={(e) => setInstructions(e.target.value)}
@@ -141,7 +141,7 @@ export function CompareDocumentsForm({ onCompare }: CompareDocumentsFormProps) {
           </div>
 
           <Button type="submit" className="w-full" size="lg" disabled={!fileA || !fileB}>
-            Compare Offers
+            Compare Documents
           </Button>
         </form>
       </CardContent>

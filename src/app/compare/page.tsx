@@ -29,6 +29,10 @@ export default function ComparePage() {
       if (result.error) {
         throw new Error(result.error);
       }
+      const clauseCount = Object.values(result.docA || {}).flat().length + Object.values(result.docB || {}).flat().length;
+      if (clauseCount < 2) {
+        throw new Error("🚫 Could not find legal clauses—check file is text/PDF and not scanned image.");
+      }
       setComparison(result as ComparisonResult);
     } catch (e: any) {
       const errorMessage = e.message || "An unexpected error occurred during comparison.";
@@ -71,7 +75,7 @@ export default function ComparePage() {
             <>
               {error && (
                 <Alert variant="destructive" className="mb-8 max-w-4xl mx-auto">
-                   <AlertTitle>{error === "🚫 Can’t parse this file—try plain text or PDF." ? "Parsing Error" : "Error"}</AlertTitle>
+                   <AlertTitle>{error.startsWith("🚫") ? "Parsing Error" : "Error"}</AlertTitle>
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
