@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useRef } from 'react';
-import { Download, FileUp, FileText, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react';
+import { Download, FileUp, FileText, CheckCircle2, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { exportToPdf } from '@/lib/export-utils';
@@ -92,7 +92,13 @@ export function ComparisonDashboard({ data, onReset }: ComparisonDashboardProps)
                 <h2 className="text-3xl font-bold tracking-tight">Comparison Report</h2>
                 <p className="text-muted-foreground mt-1 text-slate-600">{getAdvantageText()}</p>
             </div>
-            <Button variant="outline" onClick={onReset}><FileUp className="mr-2 h-4 w-4"/> New Comparison</Button>
+            <div className='flex items-center gap-2'>
+              <Button variant="outline" onClick={onReset}><FileUp className="mr-2 h-4 w-4"/> New Comparison</Button>
+              <Button onClick={handleExport}>
+                  <Download className="mr-2 h-5 w-5" />
+                  Export PDF
+              </Button>
+            </div>
         </div>
       
         <div ref={reportRef} id="report" className="bg-white/60 backdrop-blur-xl rounded-2xl shadow-lg p-4 sm:p-6">
@@ -145,16 +151,6 @@ export function ComparisonDashboard({ data, onReset }: ComparisonDashboardProps)
                 </CardContent>
             </Card>
         </div>
-
-        <Button 
-            onClick={handleExport}
-            className="fixed bottom-8 right-8 h-12 px-5 py-2.5 rounded-full bg-orange-500 text-white shadow-lg shadow-orange-500/30 hover:bg-orange-600 transition-all"
-        >
-            <Download className="mr-2 h-5 w-5" />
-            Export PDF
-        </Button>
     </div>
   );
 }
-
-    
