@@ -25,11 +25,16 @@ export function LegalChatbotWidget() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isSending, setIsSending] = useState(false);
   const [lastMessageTime, setLastMessageTime] = useState(0);
+  const [hasAnalysis, setHasAnalysis] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const pathname = usePathname();
 
-  const isHomePage = pathname === '/';
+  useEffect(() => {
+    // This code runs only on the client, after the component has mounted.
+    // This is the safe place to access the `document` object.
+    setHasAnalysis(!!document.getElementById('report') || !!document.getElementById('comparison-report'));
+  }, [pathname, messages]); // Re-check when path or messages change
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -65,13 +70,18 @@ export function LegalChatbotWidget() {
     setInput('');
 
     try {
-      const pageContentElement = document.getElementById('page-content');
-      const pageContext = pageContentElement ? pageContentElement.innerText : undefined;
+      let pageContext: string | undefined;
+      const isContentAvailable = hasAnalysis;
 
+      if (isContentAvailable) {
+        const pageContentElement = document.getElementById('page-content');
+        pageContext = pageContentElement ? pageContentElement.innerText : undefined;
+      }
+      
       const result = await askLegalQuestionAction({
         query: userMessage.text,
-        context: isHomePage ? undefined : pageContext,
-        homeFacts: isHomePage ? homeFacts : undefined,
+        context: isContentAvailable ? pageContext : undefined,
+        homeFacts: !isContentAvailable ? homeFacts : undefined,
       });
 
       const botMessage: Message = { id: Date.now(), sender: 'bot', text: result.reply };
@@ -127,7 +137,7 @@ export function LegalChatbotWidget() {
                     <div className="text-center text-slate-500">
                         <Bot className="h-12 w-12 mx-auto mb-2 opacity-50"/>
                         <p>Hi! I'm LexiBot.</p>
-                        <p className="text-xs">{isHomePage ? "Ask me about Indian legal docs." : "Ask me about the content on this page."}</p>
+                        <p className="text-xs">{hasAnalysis ? "Ask me about the content on this page." : "Ask me about Indian legal docs."}</p>
                     </div>
                 </div>
               )}
