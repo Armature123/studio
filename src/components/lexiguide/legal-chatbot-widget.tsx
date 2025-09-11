@@ -5,7 +5,7 @@ import { useState, useRef, useEffect } from "react";
 import { Bot, Send, User, X, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { askLegalQuestionAction } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -121,7 +121,7 @@ export function LegalChatbotWidget() {
         size="icon"
         onClick={() => setIsOpen(!isOpen)}
       >
-        {isOpen ? <X className="h-7 w-7" /> : <MessageSquare className="h-7 w-7" />}
+        {isOpen ? <X className="h-7 w-7" /> : <Bot className="h-7 w-7" />}
         <span className="sr-only">{isOpen ? "Close Chat" : "Open Legal Chat"}</span>
       </Button>
 
