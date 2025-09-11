@@ -125,12 +125,12 @@ export function LegalChatbotWidget() {
 
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetContent 
-          side="bottom" 
-          className="bg-white/70 backdrop-blur-xl rounded-t-3xl p-0 h-full max-h-[60vh] w-full max-w-lg mx-auto border-t-2 border-slate-200"
+          side="right" 
+          className="bg-white/70 backdrop-blur-xl rounded-l-3xl p-0 h-full max-h-[80vh] md:max-h-[60vh] w-full max-w-lg border-l-2 border-slate-200 bottom-0 right-0 top-auto translate-y-0"
           style={{ boxShadow: '0 -10px 30px -15px rgba(0, 0, 0, 0.2)' }}
         >
           <div className="flex flex-col h-full">
-            <SheetHeader className="p-4 border-b text-left sticky top-0 bg-white/80 backdrop-blur-lg rounded-t-3xl">
+            <SheetHeader className="p-4 border-b text-left sticky top-0 bg-white/80 backdrop-blur-lg rounded-tl-3xl">
               <div className="flex justify-between items-center">
                 <SheetTitle className="text-lg font-semibold text-slate-800">Ask LexiBot</SheetTitle>
                 <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
@@ -169,7 +169,7 @@ export function LegalChatbotWidget() {
               <div ref={chatEndRef} />
             </div>
 
-            <div className="p-4 border-t bg-white/80 sticky bottom-0">
+            <div className="p-4 border-t bg-white/80 sticky bottom-0 rounded-bl-3xl">
               <form onSubmit={handleSendMessage} className="flex items-center gap-2">
                 <Input
                   value={input}
