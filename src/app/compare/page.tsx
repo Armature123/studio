@@ -61,6 +61,7 @@ export default function ComparePage() {
            <nav className="flex items-center space-x-6 text-sm font-medium">
              <Link href="/" className="text-muted-foreground hover:text-foreground">Analyze</Link>
              <Link href="/compare" className="text-foreground">Compare</Link>
+             <Link href="/lawyers" className="text-muted-foreground hover:text-foreground">Find a Lawyer</Link>
           </nav>
         </div>
       </header>

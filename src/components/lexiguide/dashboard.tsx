@@ -2,7 +2,7 @@
 "use client";
 
 import { useRef } from 'react';
-import { Download, FileDown, FileText, Bot } from 'lucide-react';
+import { Download, FileDown, FileText, Bot, Handshake } from 'lucide-react';
 import type { AnalysisResult } from "@/lib/types";
 import { RisksSection } from "./risks-section";
 import { TasksSection } from "./tasks-section";
@@ -17,6 +17,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { exportToPdf, exportToDocx, saveToGoogleDocs } from '@/lib/export-utils';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import Link from 'next/link';
 
 interface DashboardProps {
   data: AnalysisResult;
@@ -72,6 +74,21 @@ export function Dashboard({ data }: DashboardProps) {
             </div>
             <div className="lg:col-span-2 space-y-8">
                 <TasksSection tasks={data.actionItems} />
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Handshake /> Next Steps
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <CardDescription>
+                            Your report highlights key risks and actions. For professional advice, consider connecting with a legal expert.
+                        </CardDescription>
+                        <Button asChild className="w-full">
+                           <Link href="/lawyers">Find a Lawyer for Expert Review</Link>
+                        </Button>
+                    </CardContent>
+                </Card>
                 <GlossarySection definitions={data.metadata.metadata.definitions} />
             </div>
         </div>
