@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Download, FileDown, FileText, Bot } from 'lucide-react';
 import type { AnalysisResult } from "@/lib/types";
 import { RisksSection, type RiskItem } from "./risks-section";
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { exportToPdf, exportToDocx, saveToGoogleDocs } from '@/lib/export-utils';
 import { ClauseRewriterModal, type RewriteClauseData } from './clause-rewriter-modal';
+import { generateAudioSummaryAction } from '@/app/actions';
 
 interface DashboardProps {
   data: AnalysisResult;
@@ -27,6 +28,23 @@ export function Dashboard({ data }: DashboardProps) {
   const reportRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const [rewriteModalData, setRewriteModalData] = useState<RewriteClauseData | null>(null);
+  const [audioSummary, setAudioSummary] = useState<{ dataUri?: string, isLoading: boolean, error?: string }>({ isLoading: false });
+
+  useEffect(() => {
+    const generateAudio = async () => {
+      if (data.metadata.metadata.summary) {
+        setAudioSummary({ isLoading: true });
+        const result = await generateAudioSummaryAction(data.metadata.metadata.summary);
+        if (result.error) {
+          setAudioSummary({ isLoading: false, error: result.error });
+        } else {
+          setAudioSummary({ isLoading: false, dataUri: result.audioDataUri });
+        }
+      }
+    };
+    generateAudio();
+  }, [data.metadata.metadata.summary]);
+
 
   const handleExport = (exportFunction: (element: HTMLElement, toast: any) => void) => {
     if (reportRef.current) {
@@ -85,7 +103,7 @@ export function Dashboard({ data }: DashboardProps) {
           {/* Main Content: Risks and Actions */}
           <div className="lg:col-span-3 space-y-8 animate-fade-in-up">
             <RisksSection risks={data.risks.risks} onRewrite={handleRewriteClick} />
-            <MetadataSection metadata={data.metadata.metadata} />
+            <MetadataSection metadata={data.metadata.metadata} audioSummary={audioSummary} />
           </div>
           
           {/* Sidebar: Tasks and Glossary */}

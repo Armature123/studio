@@ -8,6 +8,7 @@ import { extractActionItems, ExtractActionItemsOutput } from "@/ai/flows/extract
 import { compareDocuments } from "@/ai/flows/compare-documents";
 import { askLegalQuestion, } from "@/ai/flows/legal-chat-flow";
 import { rewriteClause, RewriteClauseOutput } from "@/ai/flows/rewrite-clause-flow";
+import { generateAudioSummary } from "@/ai/flows/generate-audio-summary";
 import type { CompareDocumentsOutput } from "@/lib/comparison-types";
 import type { LegalChatInput, LegalChatOutput } from "@/lib/chat-types";
 
@@ -134,5 +135,20 @@ export async function rewriteClauseAction(clause: string, context?: string): Pro
     } catch (error: any) {
         console.error("Error rewriting clause:", error);
         return { error: `Failed to rewrite the clause: ${error.message}` };
+    }
+}
+
+
+export async function generateAudioSummaryAction(text: string): Promise<{ audioDataUri?: string; error?: string }> {
+    if (!text) {
+        return { error: 'No text provided for audio summary.' };
+    }
+
+    try {
+        const { audioDataUri } = await generateAudioSummary({ text });
+        return { audioDataUri };
+    } catch (error: any) {
+        console.error("Error generating audio summary:", error);
+        return { error: `Failed to generate audio: ${error.message}` };
     }
 }

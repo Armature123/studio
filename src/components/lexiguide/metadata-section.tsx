@@ -1,12 +1,21 @@
 
-import { FileText, Users, CalendarDays, Gavel, Scale, FileSignature, type LucideIcon } from "lucide-react";
+"use client";
+
+import { useState } from 'react';
+import { FileText, Users, CalendarDays, Gavel, Scale, FileSignature, Volume2, Loader2, AlertCircle, type LucideIcon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ExtractLegalMetadataOutput } from "@/lib/types";
 import { Badge } from "../ui/badge";
+import { Button } from '../ui/button';
 import { cn } from "@/lib/utils";
 
 interface MetadataSectionProps {
   metadata: ExtractLegalMetadataOutput["metadata"];
+  audioSummary: {
+    dataUri?: string;
+    isLoading: boolean;
+    error?: string;
+  };
 }
 
 const MetadataItem = ({ title, content, icon: Icon, className }: { title: string, content?: string | null, icon: LucideIcon, className?: string }) => {
@@ -31,15 +40,45 @@ const PartyItem = ({ name, role }: { name: string, role: string }) => (
 );
 
 
-export function MetadataSection({ metadata }: MetadataSectionProps) {
+export function MetadataSection({ metadata, audioSummary }: MetadataSectionProps) {
+  const [showAudio, setShowAudio] = useState(false);
+  
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-3">
-          <FileText className="h-6 w-6" />
-          Document Overview
-        </CardTitle>
-        <CardDescription>{metadata.summary || "A summary of the document."}</CardDescription>
+        <div className="flex justify-between items-start">
+            <div className="flex-1">
+                <CardTitle className="flex items-center gap-3">
+                  <FileText className="h-6 w-6" />
+                  Document Overview
+                </CardTitle>
+                <CardDescription>{metadata.summary || "A summary of the document."}</CardDescription>
+            </div>
+            {audioSummary.isLoading ? (
+                 <Button variant="outline" size="sm" disabled>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Generating Audio
+                </Button>
+            ) : audioSummary.dataUri ? (
+                <Button variant="outline" size="sm" onClick={() => setShowAudio(!showAudio)}>
+                    <Volume2 className="mr-2 h-4 w-4" />
+                    {showAudio ? 'Hide Player' : 'Listen to Summary'}
+                </Button>
+            ) : audioSummary.error ? (
+                 <Badge variant="destructive" className="flex items-center gap-2 text-xs">
+                    <AlertCircle className="h-3 w-3" />
+                    Audio Failed
+                </Badge>
+            ) : null}
+        </div>
+        {showAudio && audioSummary.dataUri && (
+             <div className="mt-4">
+                <audio controls className="w-full h-10">
+                    <source src={audioSummary.dataUri} type="audio/wav" />
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+        )}
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
