@@ -14,7 +14,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 
 const LawyerProfileCard = ({ lawyer }: { lawyer: Lawyer }) => {
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+    <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-105">
       <CardContent className="p-0">
         <div className="relative h-48 w-full">
           <Image
@@ -66,14 +66,14 @@ export default function LawyersPage() {
       </header>
       <main className="flex-1">
         <div className="container py-8">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 animate-fade-in-up">
             <h2 className="text-4xl font-extrabold tracking-tight">Find Your Legal Expert</h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
               Connect with experienced lawyers specializing in Indian corporate and contract law.
             </p>
           </div>
 
-          <div className="mb-8 p-4 border rounded-lg bg-card flex flex-col md:flex-row items-center gap-4">
+          <div className="mb-8 p-4 border rounded-lg bg-card flex flex-col md:flex-row items-center gap-4 animate-fade-in-up" style={{"--animation-delay": "200ms"} as React.CSSProperties}>
             <div className="relative flex-grow w-full">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input placeholder="Search by name, specialty, or keyword..." className="pl-10" />
@@ -99,8 +99,10 @@ export default function LawyersPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {lawyers.map((lawyer) => (
-              <LawyerProfileCard key={lawyer.id} lawyer={lawyer} />
+            {lawyers.map((lawyer, index) => (
+              <div key={lawyer.id} className="animate-fade-in-up" style={{"--animation-delay": `${300 + index * 100}ms`} as React.CSSProperties}>
+                <LawyerProfileCard lawyer={lawyer} />
+              </div>
             ))}
           </div>
         </div>

@@ -56,7 +56,7 @@ export function Dashboard({ data }: DashboardProps) {
                 data={rewriteModalData}
             />
         )}
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end mb-4 animate-fade-in-down">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button>
@@ -83,13 +83,13 @@ export function Dashboard({ data }: DashboardProps) {
       <div ref={reportRef} id="report" className="space-y-8 bg-background p-4 sm:p-8 rounded-lg">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
           {/* Main Content: Risks and Actions */}
-          <div className="lg:col-span-3 space-y-8">
+          <div className="lg:col-span-3 space-y-8 animate-fade-in-up">
             <RisksSection risks={data.risks.risks} onRewrite={handleRewriteClick} />
             <MetadataSection metadata={data.metadata.metadata} />
           </div>
           
           {/* Sidebar: Tasks and Glossary */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-8 animate-fade-in-up" style={{"--animation-delay": "200ms"} as React.CSSProperties}>
             <TasksSection tasks={data.actionItems} />
             <GlossarySection definitions={data.metadata.definitions} />
           </div>

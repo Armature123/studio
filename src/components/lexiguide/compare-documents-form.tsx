@@ -134,7 +134,7 @@ export function CompareDocumentsForm({ onCompare }: CompareDocumentsFormProps) {
   };
 
   return (
-    <Card className="max-w-4xl mx-auto bg-card">
+    <Card className="max-w-4xl mx-auto bg-card animate-fade-in-up">
       <CardHeader className="text-center">
         <div className="mx-auto bg-primary/10 text-primary rounded-full p-3 w-fit mb-4">
           <GitCompareArrows className="h-8 w-8 text-accent" />

@@ -117,7 +117,10 @@ export function LegalChatbotWidget() {
   return (
     <>
       <Button
-        className="fixed bottom-4 right-4 md:bottom-6 md:right-6 h-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 z-50 pl-4 pr-5"
+        className={cn(
+          "fixed bottom-4 right-4 md:bottom-6 md:right-6 h-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 z-50 pl-4 pr-5 transition-transform duration-300 hover:scale-105 animate-subtle-pulse",
+          isOpen ? "" : "animate-fade-in-up"
+        )}
         onClick={() => setIsOpen(!isOpen)}
       >
         {isOpen ? <X className="h-7 w-7" /> : <><Bot className="h-7 w-7 mr-2" /> <span>Ask LexiBot</span></>}
@@ -129,7 +132,7 @@ export function LegalChatbotWidget() {
             <Sheet open={true} onOpenChange={setIsOpen}>
                 <SheetContent 
                 side="right" 
-                className="bg-background/80 backdrop-blur-xl rounded-2xl p-0 h-full w-full border-2 border-border shadow-2xl flex flex-col"
+                className="bg-background/80 backdrop-blur-xl rounded-2xl p-0 h-full w-full border-2 border-border shadow-2xl flex flex-col data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-bottom-5 data-[state=open]:duration-500"
                 >
                 <div className="flex flex-col h-full">
                     <SheetHeader className="p-4 border-b text-left sticky top-0 bg-background/90 backdrop-blur-lg">

@@ -15,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full" style={{"--animation-delay": "0ms"} as React.CSSProperties}>
       <head>
           <title>LexiGuide</title>
           <meta name="description" content="Your AI-powered legal document assistant." />

@@ -86,7 +86,7 @@ export function ComparisonDashboard({ data, onReset }: ComparisonDashboardProps)
     };
 
   return (
-    <div className="space-y-6" id="comparison-report">
+    <div className="space-y-6 animate-fade-in-up" id="comparison-report">
         <div className="flex justify-between items-start flex-wrap gap-4">
             <div>
                 <h2 className="text-3xl font-bold tracking-tight">Comparison Report</h2>

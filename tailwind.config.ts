@@ -1,3 +1,4 @@
+
 import type {Config} from 'tailwindcss';
 
 export default {
@@ -96,10 +97,37 @@ export default {
             height: '0',
           },
         },
+        'fade-in-up': {
+            '0%': {
+                opacity: '0',
+                transform: 'translateY(10px)'
+            },
+            '100%': {
+                opacity: '1',
+                transform: 'translateY(0)'
+            },
+        },
+        'fade-in-down': {
+            '0%': {
+                opacity: '0',
+                transform: 'translateY(-10px)'
+            },
+            '100%': {
+                opacity: '1',
+                transform: 'translateY(0)'
+            },
+        },
+        'subtle-pulse': {
+            '0%, 100%': { transform: 'scale(1)', boxShadow: '0 0 0 0 rgba(var(--primary-rgb), 0.3)' },
+            '50%': { transform: 'scale(1.02)', boxShadow: '0 0 0 10px rgba(var(--primary-rgb), 0)' },
+        }
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'fade-in-up': 'fade-in-up 0.5s ease-out forwards',
+        'fade-in-down': 'fade-in-down 0.5s ease-out forwards',
+        'subtle-pulse': 'subtle-pulse 4s infinite cubic-bezier(0.4, 0, 0.6, 1)',
       },
     },
   },
