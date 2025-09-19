@@ -3,6 +3,7 @@ import { FileText, Users, CalendarDays, Gavel, Scale, FileSignature, type Lucide
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ExtractLegalMetadataOutput } from "@/lib/types";
 import { Badge } from "../ui/badge";
+import { cn } from "@/lib/utils";
 
 interface MetadataSectionProps {
   metadata: ExtractLegalMetadataOutput["metadata"];
