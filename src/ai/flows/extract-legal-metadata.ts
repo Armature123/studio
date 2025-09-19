@@ -2,7 +2,7 @@
 'use server';
 
 /**
- * @fileOverview This file defines a Genkit flow for extracting legal metadata from documents.
+ * @fileOverview This file defines a Genkit flow for extracting structured legal metadata from documents.
  *
  * It includes:
  * - `extractLegalMetadata`: A function to initiate the legal metadata extraction process.
@@ -17,21 +17,26 @@ const ExtractLegalMetadataInputSchema = z.object({
     .describe(
       "The legal document to be analyzed, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
+  language: z.string().optional().default('English').describe('The language for the output summary.'),
 });
 export type ExtractLegalMetadataInput = z.infer<typeof ExtractLegalMetadataInputSchema>;
 
 const ExtractLegalMetadataOutputSchema = z.object({
   metadata: z
     .object({
-      keyMetadata: z.string().describe('Key metadata of the legal document.'),
-      moneyTerms: z.string().describe('Money terms mentioned in the document.'),
-      duties: z.string().describe('Duties and obligations outlined in the document.'),
-      clauses: z.string().describe('Important clauses within the legal document.'),
-      risks: z.string().describe('Potential risks and red flags identified.'),
-      dates: z.string().describe('Important dates mentioned in the document.'),
-      definitions: z.string().describe('Definitions of key legal terms used.'),
+      documentTitle: z.string().describe("The title of the document (e.g., 'Residential Lease Agreement')."),
+      documentType: z.string().describe("The type of legal document (e.g., 'Lease', 'NDA', 'Employment Contract')."),
+      parties: z.array(z.object({name: z.string(), role: z.string()})).describe("The parties involved (e.g., 'Landlord', 'Tenant')."),
+      effectiveDate: z.string().describe("The date the agreement becomes effective."),
+      term: z.string().describe("The duration or term of the agreement (e.g., '12 months', 'At-will')."),
+      governingLaw: z.string().describe("The jurisdiction's law that governs the contract (e.g., 'State of California, USA')."),
+      summary: z.string().describe(`A simple, one-paragraph summary of the document's purpose, written in {{{language}}}.`),
     })
     .describe('Extracted metadata from the legal document.'),
+  definitions: z.array(z.object({
+      term: z.string().describe("The defined term."),
+      definition: z.string().describe("The definition of the term.")
+  })).describe("A list of key legal terms and their simplified definitions from the document.")
 });
 export type ExtractLegalMetadataOutput = z.infer<typeof ExtractLegalMetadataOutputSchema>;
 
@@ -43,11 +48,12 @@ const extractLegalMetadataPrompt = ai.definePrompt({
   name: 'extractLegalMetadataPrompt',
   input: {schema: ExtractLegalMetadataInputSchema},
   output: {schema: ExtractLegalMetadataOutputSchema},
-  prompt: `You are an AI assistant specialized in legal document analysis. Your task is to extract key metadata, money terms, duties, clauses, risks, dates, and definitions from the provided legal document.
+  prompt: `You are an AI legal assistant. Analyze the document below to extract key structural metadata.
+Your output must be a valid JSON object conforming to the schema.
+The summary and definitions should be written in simple terms for a non-lawyer.
+The output summary must be in {{{language}}}.
 
-    Legal Document: {{media url=documentDataUri}}
-
-    Please provide the extracted information in a structured format.
+Legal Document: {{media url=documentDataUri}}
   `,
 });
 

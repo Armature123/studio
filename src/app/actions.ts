@@ -21,10 +21,16 @@ async function fileToDataURI(file: File): Promise<string> {
 
 export async function analyzeDocument(formData: FormData) {
   const file = formData.get('document') as File;
-  
+  const language = formData.get('language') as string || 'English';
+  const retention = formData.get('retention') as string || '7d';
+
   if (!file) {
     return { error: 'No document provided.' };
   }
+  
+  // In a real application, you would use the 'retention' value to schedule a deletion task.
+  // For this hackathon, we'll just log it to show the value is received.
+  console.log(`Document received. Language: ${language}, Retention Policy: ${retention}`);
   
   let documentDataUri: string;
   try {
@@ -44,7 +50,7 @@ export async function analyzeDocument(formData: FormData) {
       actionItemsResult: ExtractActionItemsOutput;
 
   try {
-    metadataResult = await extractLegalMetadata({ documentDataUri });
+    metadataResult = await extractLegalMetadata({ documentDataUri, language });
   } catch (error: any) {
     console.error("Error extracting metadata:", error);
     return { error: `Failed during metadata extraction: ${error.message}` };
