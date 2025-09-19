@@ -92,6 +92,16 @@ export async function compareDocumentsAction(formData: FormData) {
       fileToDataURI(fileA),
       fileToDataURI(fileB),
     ]);
+
+    // Detect language of each document
+    const [langResultA, langResultB] = await Promise.all([
+        detectLanguage({ documentDataUri: dataUriA }),
+        detectLanguage({ documentDataUri: dataUriB }),
+    ]);
+
+    if (langResultA.language.toLowerCase() !== langResultB.language.toLowerCase()) {
+        return { error: `Comparison failed: Documents appear to be in different languages (${langResultA.language} and ${langResultB.language}). Please upload documents in the same language.` };
+    }
     
     const input = {
       documentA: { documentDataUri: dataUriA, fileName: fileA.name },
