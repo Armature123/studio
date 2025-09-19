@@ -16,13 +16,13 @@ const LawyerProfileCard = ({ lawyer }: { lawyer: Lawyer }) => {
   return (
     <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-105">
       <CardContent className="p-0">
-        <div className="relative h-48 w-full">
+        <div className="flex justify-center items-center bg-muted p-4">
           <Image
             src={lawyer.photoUrl}
             alt={`Photo of ${lawyer.name}`}
-            layout="fill"
-            objectFit="cover"
-            className="bg-muted"
+            width={260}
+            height={250}
+            className="bg-muted object-cover"
           />
         </div>
         <div className="p-4 space-y-3">
