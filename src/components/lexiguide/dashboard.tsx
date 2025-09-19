@@ -1,10 +1,10 @@
 
 "use client";
 
-import { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Download, FileDown, FileText, Bot, Handshake } from 'lucide-react';
 import type { AnalysisResult } from "@/lib/types";
-import { RisksSection } from "./risks-section";
+import { RisksSection, type RiskItem } from "./risks-section";
 import { TasksSection } from "./tasks-section";
 import { MetadataSection } from "./metadata-section";
 import { GlossarySection } from "./glossary-section";
@@ -19,6 +19,7 @@ import {
 import { exportToPdf, exportToDocx, saveToGoogleDocs } from '@/lib/export-utils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import Link from 'next/link';
+import { ClauseRewriterModal, type RewriteClauseData } from './clause-rewriter-modal';
 
 interface DashboardProps {
   data: AnalysisResult;
@@ -27,6 +28,7 @@ interface DashboardProps {
 export function Dashboard({ data }: DashboardProps) {
   const reportRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const [rewriteModalData, setRewriteModalData] = useState<RewriteClauseData | null>(null);
 
   const handleExport = (exportFunction: (element: HTMLElement, toast: any) => void) => {
     if (reportRef.current) {
@@ -40,8 +42,22 @@ export function Dashboard({ data }: DashboardProps) {
     }
   };
 
+  const handleRewriteClick = (risk: RiskItem) => {
+    setRewriteModalData({
+        clause: risk.risk,
+        context: risk.explanation
+    });
+  }
+
   return (
     <div>
+        {rewriteModalData && (
+            <ClauseRewriterModal
+                isOpen={!!rewriteModalData}
+                onClose={() => setRewriteModalData(null)}
+                data={rewriteModalData}
+            />
+        )}
       <div className="flex justify-end mb-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -69,7 +85,7 @@ export function Dashboard({ data }: DashboardProps) {
       <div ref={reportRef} id="report" className="space-y-8 bg-background p-4 sm:p-8 rounded-lg">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
             <div className="lg:col-span-3 space-y-8">
-                <RisksSection risks={data.risks.risks} />
+                <RisksSection risks={data.risks.risks} onRewrite={handleRewriteClick} />
                 <MetadataSection metadata={data.metadata.metadata} />
             </div>
             <div className="lg:col-span-2 space-y-8">

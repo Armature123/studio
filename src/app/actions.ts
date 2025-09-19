@@ -7,6 +7,7 @@ import { detectLanguage } from "@/ai/flows/detect-language";
 import { extractActionItems, ExtractActionItemsOutput } from "@/ai/flows/extract-action-items";
 import { compareDocuments } from "@/ai/flows/compare-documents";
 import { askLegalQuestion, } from "@/ai/flows/legal-chat-flow";
+import { rewriteClause, RewriteClauseOutput } from "@/ai/flows/rewrite-clause-flow";
 import type { CompareDocumentsOutput } from "@/lib/comparison-types";
 import type { LegalChatInput, LegalChatOutput } from "@/lib/chat-types";
 
@@ -120,4 +121,18 @@ export async function askLegalQuestionAction(input: LegalChatInput): Promise<Leg
       reply: "Sorry, I encountered an error. Please try again.",
     };
   }
+}
+
+export async function rewriteClauseAction(clause: string, context?: string): Promise<RewriteClauseOutput | { error: string }> {
+    if (!clause) {
+        return { error: 'No clause provided to rewrite.' };
+    }
+
+    try {
+        const result = await rewriteClause({ clause, context, companyType: 'Startup' });
+        return result;
+    } catch (error: any) {
+        console.error("Error rewriting clause:", error);
+        return { error: `Failed to rewrite the clause: ${error.message}` };
+    }
 }
