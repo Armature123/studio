@@ -27,12 +27,7 @@ Your task is to analyze two documents (Doc A and Doc B) and provide a structured
 
 **Analysis Steps:**
 
-1.  **Identify Core Clause Categories:** For both documents, extract key clauses and group them into these exact five categories:
-    *   **Obligations:** Specific duties and actions a party must perform.
-    *   **Rights:** Entitlements or permissions granted to a party.
-    *   **Risks_Liabilities:** Clauses related to liability, indemnification, and risk allocation.
-    *   **Term_Termination:** Details on the contract duration, renewal, and how it can be ended.
-    *   **Levers:** Key negotiable terms like governing law, dispute resolution, IP rights, etc.
+1.  **Identify Core Clause Categories:** For both documents, extract key clauses and group them into logical categories based on their content (e.g., "Liability", "Intellectual Property", "Termination", "Confidentiality"). Do not use a fixed list; derive the categories from the documents themselves.
 
 2.  **Match Similar Clauses:** Within each category, compare the clauses from Doc A and Doc B.
     *   A pair of clauses is "similar" if they address the same legal concept, even if the wording differs.
