@@ -100,15 +100,9 @@ export async function compareDocumentsAction(formData: FormData) {
     
     const result: CompareDocumentsOutput = await compareDocuments(input);
     
-    const clauseCountA = Object.values(result.docA || {}).flat().length;
-    const clauseCountB = Object.values(result.docB || {}).flat().length;
-    if (clauseCountA < 2 && clauseCountB < 2) {
-      return { error: "🚫 Could not find legal clauses—check file is text/PDF and not scanned image." };
-    }
-
     return { ...result, docNames: [fileA.name, fileB.name] };
 
-  } catch (error: any) {
+  } catch (error: any) {    
     console.error("Error during document comparison action:", error);
     return { 
       error: `Comparison failed: ${error.message || 'An unknown error occurred.'}` 

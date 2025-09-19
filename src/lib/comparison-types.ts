@@ -23,18 +23,37 @@ export const CompareDocumentsInputSchema = z.object({
 export type CompareDocumentsInput = z.infer<typeof CompareDocumentsInputSchema>;
 
 
-export const ClauseCategorySchema = z.object({
-    Obligations: z.array(z.string()).describe("Duties each party must do."),
-    Rights: z.array(z.string()).describe("What each party is entitled to."),
-    Risks_Liabilities: z.array(z.string()).describe("Who pays, indemnifies, or is liable."),
-    Term_Termination: z.array(z.string()).describe("Length, exit, notice, renewal."),
-    Levers: z.array(z.string()).describe("Clauses commonly red-lined (caps, governing law, venue, IP, non-compete, etc.)."),
+export const MatchedClauseSchema = z.object({
+    docAClause: z.string().describe("The full text of the clause from Document A."),
+    docBClause: z.string().describe("The full text of the similar clause from Document B."),
+    differenceSummary: z.string().describe("A concise explanation of the key difference between the two clauses."),
+    moreFavorable: z.enum(['DocA', 'DocB', 'Balanced']).describe("Which document's clause is more favorable to a Startup, or if they are balanced."),
 });
-export type ClauseCategory = z.infer<typeof ClauseCategorySchema>;
+export type MatchedClause = z.infer<typeof MatchedClauseSchema>;
+
+export const UniqueClauseSchema = z.object({
+    clause: z.string().describe("The full text of the unique clause.")
+});
+export type UniqueClause = z.infer<typeof UniqueClauseSchema>;
+
+export const ClauseCategorySchema = z.object({
+    matched: z.array(MatchedClauseSchema).describe("An array of clauses that are similar between both documents."),
+    uniqueToDocA: z.array(UniqueClauseSchema).describe("An array of clauses that only exist in Document A."),
+    uniqueToDocB: z.array(UniqueClauseSchema).describe("An array of clauses that only exist in Document B."),
+});
+
+const ComparisonSchema = z.object({
+    Obligations: ClauseCategorySchema,
+    Rights: ClauseCategorySchema,
+    Risks_Liabilities: ClauseCategorySchema,
+    Term_Termination: ClauseCategorySchema,
+    Levers: ClauseCategorySchema,
+});
+export type ClauseCategory = z.infer<typeof ComparisonSchema>;
 
 export const CompareDocumentsOutputSchema = z.object({
-    docA: ClauseCategorySchema,
-    docB: ClauseCategorySchema,
+    summary: z.string().describe("A one-sentence executive summary of the most critical difference from a startup's perspective."),
+    comparison: ComparisonSchema,
 });
 export type CompareDocumentsOutput = z.infer<typeof CompareDocumentsOutputSchema>;
 

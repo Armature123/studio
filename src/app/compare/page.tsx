@@ -29,7 +29,17 @@ export default function ComparePage() {
       if (result.error) {
         throw new Error(result.error);
       }
+      // Check if there is meaningful data to display
+      const hasContent = Object.values(result.comparison).some(cat => 
+        cat.matched.length > 0 || cat.uniqueToDocA.length > 0 || cat.uniqueToDocB.length > 0
+      );
+
+      if (!hasContent) {
+        throw new Error("🚫 Could not find significant legal clauses for comparison. Please check if the documents are text-based and not scanned images.");
+      }
+
       setComparison(result as ComparisonResult);
+
     } catch (e: any) {
       const errorMessage = e.message || "An unexpected error occurred during comparison.";
       setError(errorMessage);
