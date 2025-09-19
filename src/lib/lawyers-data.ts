@@ -13,7 +13,7 @@ export const lawyers: Lawyer[] = [
   {
     id: 1,
     name: 'Adv. Rohan Sharma',
-    photoUrl: 'https://picsum.photos/seed/lawyer1/400/400',
+    photoUrl: 'https://i.ibb.co/ZzdqPmZR/black-circular-icon-featuring-formal-260nw-2650487903.jpg',
     specialties: ['Corporate Law', 'M&A', 'Venture Capital'],
     rating: 4.9,
     reviewCount: 120,
@@ -22,7 +22,7 @@ export const lawyers: Lawyer[] = [
   {
     id: 2,
     name: 'Adv. Priya Singh',
-    photoUrl: 'https://picsum.photos/seed/lawyer2/400/400',
+    photoUrl: 'https://i.ibb.co/ZzdqPmZR/black-circular-icon-featuring-formal-260nw-2650487903.jpg',
     specialties: ['Contract Law', 'Intellectual Property', 'Litigation'],
     rating: 4.8,
     reviewCount: 95,
@@ -31,7 +31,7 @@ export const lawyers: Lawyer[] = [
   {
     id: 3,
     name: 'Adv. Arjun Menon',
-    photoUrl: 'https://picsum.photos/seed/lawyer3/400/400',
+    photoUrl: 'https://i.ibb.co/ZzdqPmZR/black-circular-icon-featuring-formal-260nw-2650487903.jpg',
     specialties: ['Startup Law', 'Fundraising', 'Compliance'],
     rating: 4.9,
     reviewCount: 150,
@@ -40,7 +40,7 @@ export const lawyers: Lawyer[] = [
   {
     id: 4,
     name: 'Adv. Aisha Khan',
-    photoUrl: 'https://picsum.photos/seed/lawyer4/400/400',
+    photoUrl: 'https://i.ibb.co/ZzdqPmZR/black-circular-icon-featuring-formal-260nw-2650487903.jpg',
     specialties: ['Tech Law', 'Data Privacy', 'SaaS Contracts'],
     rating: 4.7,
     reviewCount: 88,
@@ -49,7 +49,7 @@ export const lawyers: Lawyer[] = [
   {
     id: 5,
     name: 'Adv. Vikram Reddy',
-    photoUrl: 'https://picsum.photos/seed/lawyer5/400/400',
+    photoUrl: 'https://i.ibb.co/ZzdqPmZR/black-circular-icon-featuring-formal-260nw-2650487903.jpg',
     specialties: ['Real Estate Law', 'Lease Agreements', 'Property Disputes'],
     rating: 4.8,
     reviewCount: 110,
@@ -58,7 +58,7 @@ export const lawyers: Lawyer[] = [
   {
     id: 6,
     name: 'Adv. Meera Desai',
-    photoUrl: 'https://picsum.photos/seed/lawyer6/400/400',
+    photoUrl: 'https://i.ibb.co/ZzdqPmZR/black-circular-icon-featuring-formal-260nw-2650487903.jpg',
     specialties: ['E-commerce', 'Consumer Law', 'Fintech'],
     rating: 4.6,
     reviewCount: 75,
@@ -67,7 +67,7 @@ export const lawyers: Lawyer[] = [
   {
     id: 7,
     name: 'Adv. Karan Gupta',
-    photoUrl: 'https://picsum.photos/seed/lawyer7/400/400',
+    photoUrl: 'https://i.ibb.co/ZzdqPmZR/black-circular-icon-featuring-formal-260nw-2650487903.jpg',
     specialties: ['Labor & Employment', 'HR Policies', 'Dispute Resolution'],
     rating: 4.9,
     reviewCount: 130,
@@ -76,7 +76,7 @@ export const lawyers: Lawyer[] = [
   {
     id: 8,
     name: 'Adv. Sneha Patil',
-    photoUrl: 'https://picsum.photos/seed/lawyer8/400/400',
+    photoUrl: 'https://i.ibb.co/ZzdqPmZR/black-circular-icon-featuring-formal-260nw-2650487903.jpg',
     specialties: ['Tax Law', 'GST', 'Corporate Tax'],
     rating: 4.8,
     reviewCount: 105,
