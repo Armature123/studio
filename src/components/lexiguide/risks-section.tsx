@@ -19,6 +19,12 @@ const severityConfig: Record<string, { variant: "destructive" | "secondary" | "m
     low: { variant: 'secondary', text: 'Low' }
 }
 
+const severityOrder: Record<string, number> = {
+    high: 0,
+    medium: 1,
+    low: 2,
+};
+
 export function RisksSection({ risks, onRewrite }: RisksSectionProps) {
   if (!risks || risks.length === 0) {
     return (
@@ -34,6 +40,8 @@ export function RisksSection({ risks, onRewrite }: RisksSectionProps) {
     )
   }
 
+  const sortedRisks = [...risks].sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity]);
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center gap-3 space-y-0">
@@ -41,7 +49,7 @@ export function RisksSection({ risks, onRewrite }: RisksSectionProps) {
         <CardTitle>Risk & Negotiation Highlights</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {risks.map((item, index) => {
+        {sortedRisks.map((item, index) => {
             const config = severityConfig[item.severity] || { variant: 'secondary', text: 'Unknown'};
             return (
               <Alert key={index} variant={item.severity === 'high' ? "destructive" : "default"}>
